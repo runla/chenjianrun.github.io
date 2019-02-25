@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>Android 抖音爆红的口红挑战爬坑总结 | �¼�����˲���</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Android,口红机,总结,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://godbmw.com/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js" async></script>
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">GODBMW.com</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/" target="_self">
+              关于
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path>
+          
+            <a href="javascript:void(0);" v-else>抓到我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/dongyuanxin" target="_blank">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.zhihu.com/people/godbmw/activities" target="_blank">
+                    知乎
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>Android 抖音爆红的口红挑战爬坑总结</span>
+  </h1>
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2019-02-25
+    </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="Android-抖音爆红的口红挑战爬坑总结"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <h1 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h1><p>今年，相信很多人都会在各个商场或者是电影院中可以看到各种娃娃机、幸运盒子、口红挑战等等类似机器。在抖音上《口红挑战》这款机子也是火的一塌糊涂，你只要花 10 块钱就有可能赢走一个  YSL 口红，想想就觉得很有诱惑力。或许这些机器被程序员一瞧就知道其中的猫腻，但是这个机器瞄准的是那些容易冲动消费的消费者，比如情侣、女生、带小孩的大人；像程序员这么奇葩的生物，一般都是直接被无视的哈哈。</p>
+<p>然后呢，我们公司就是为这些设备的正常运行提供解决方案的。因此才有我今天的爬坑总结，哈哈哈哈哈…..</p>
+<p>我们提供的解决方案是这样的，在一个门店里面会包含如下的设备：娃娃机、口红挑战、排行榜、中控，当然其中还有我们的后台服务。那么首先我会先介绍一下整个系统的架构以及各个设备的职责：</p>
+<ul>
+<li>系统架构图</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/8/1682ace09efc6497?w=653&amp;h=478&amp;f=png&amp;s=22131" alt="门店系统结构图.png"></p>
+<ul>
+<li>服务后台<ul>
+<li>服务后台不属于 Android 这端负责的，因此不需要去关注太多，服务后台相对于门店设备而言，它的一个职责是负责给机器发送上分质量，监测设备状态，及一些其他的信息。</li>
+</ul>
+</li>
+<li>中控（本地服务：不连接外网）：这个中控也是也 Android 设备，它的功能有两个：<ol>
+<li>排行榜：用来接收娃娃机中发送过来的用户夹中娃娃的信息，并最后将其显示在排行榜上。</li>
+<li>资源分发中控：作为资源的分发中心，中控需要分发 apk 安装包、图片、</li>
+</ol>
+</li>
+<li>娃娃机：这一块其实包含了两个部分，一个是 Android 设备，另外一个硬件设备。<ol>
+<li>Android 设备主要是用来显示 banner、处理服务器数据（例如：上分）、对接中控（资源更新、数据反馈等）、对接硬件设备</li>
+<li>硬件设备主要是处理用户上分、出礼、心跳等信息，并将这些信息交给 Android 设备处理。</li>
+</ol>
+</li>
+<li>口红挑战：关于口红挑战这个设备可以划分为 3 个模块，分别为见缝插针游戏、常规程序模块、硬件模块<ol>
+<li>关于见缝插针的这个游戏是用白鹭引擎做的，最后以 h5 的形式嵌入到 APP 中，主要负责游戏的主逻辑以及和程序主模块进行游戏逻辑数据的反馈。</li>
+<li>常规模块主要是有处理服务后台的数据、对接硬件模块（格子选中、打开格子等）、对接游戏（启动游戏、游戏结果反馈等）、物料后台管理。</li>
+</ol>
+</li>
+<li>rocket：这个程序有点特殊，因为用户是看不到它的，在出厂的时候，这个程序就被写进去了，那么它负责的工作如下：<ol>
+<li>屏蔽设备的 systemui 程序和 launcher 程序，防止用户做一些非法的操作。</li>
+<li>检测 U 盘是否插入，然后移动或者负责制定文件（apk 安装包、ipconfig.json 文件、三元组配资文件config.json、h5 资源文件等）</li>
+<li>接收广播，自动安装或者更新娃娃机或者口红挑战程序</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h1 id="要解决的问题"><a href="#要解决的问题" class="headerlink" title="要解决的问题"></a>要解决的问题</h1><h2 id="同步加载资源"><a href="#同步加载资源" class="headerlink" title="同步加载资源"></a>同步加载资源</h2><blockquote>
+<p>关于资源同步的，首先我们先理一下我们需要同步的资源有哪些，这些资源分别为： apk 安装包、图片、h5 相关的 index 资源。</p>
+</blockquote>
+<h3 id="资源更新的方式"><a href="#资源更新的方式" class="headerlink" title="资源更新的方式"></a>资源更新的方式</h3><p>关于更新的方式，这里其实就有一个比较坑的地方了，一开始的时候我们选择的资源更新方式比较傻，直接使用 websocket 进行资源更新的，一开始的时候只有一个设备进行连接，问题倒是不大，但是后来发现多台设备连接同时更新资源的时候问题特别大，连接经常断开，导致资源更新失败。那么这里是我遇到的第一个坑。发现这个坑之后呢，我的选择资源更新的方式就更改为：NanoHttpd。NanoHttpd 是一个开源库，是用 Java 实现的，它可以在 Android 设备上建立一个轻量级的 web server。其实在 Android 设备上创建一个轻量级的 web server 才是我们一开始就应该要选择的方向。为什么呢？首先 NanoHttpd 的使用是比较简单的，因此我们只需要几行代码就可以实现一个 web server 了；其次呢，NanoHttpd 是比较稳定的，相对于我们手动使用 websocket 去实现一个资源分发要稳定太多了。</p>
+<p>那么在我们选择了资源的更新方式之后，有另外一个问题浮出水面了，关于服务器的 IP 地址。我们都知道，关于 Android 设备连接上移动互联网或者 WiFi 的时候都会被自动分配一个 IP 地址，因此这个 IP 地址是会变化的，我们的设备在每天晚上都会关机，然后在第二天开启重启的时候又会被分配到一个新的 IP 地址，因此服务器的 IP 地址是一直在变化的，所以这里我们需要做的是想办法把某个设备的 IP 地址给固定下来。那么接下来就来讲讲关于 NanoHttpd 创建轻量级的 web server 和如何解决 IP 变化的问题。</p>
+<h4 id="NanoHttpd-实现-web-server"><a href="#NanoHttpd-实现-web-server" class="headerlink" title="NanoHttpd 实现 web server"></a>NanoHttpd 实现 web server</h4><ul>
+<li>NanoHttpd 项目地址<ul>
+<li><a href="https://github.com/NanoHttpd/nanohttpd" target="_blank" rel="noopener">https://github.com/NanoHttpd/nanohttpd</a></li>
+</ul>
+</li>
+<li><p>gradle 依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;org.nanohttpd:nanohttpd-webserver:2.3.1&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实现方式</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">File resourceDir = new File(Environment.getExternalStorageDirectory(), &quot;myRootDir&quot;);</span><br><span class="line">SimpleWebServer httpServer = new SimpleWebServer(null, 18103, resourceDir, true, &quot;*&quot;);</span><br><span class="line">httpServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, true);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SimpleWebServer 构造函数的参数<ul>
+<li>host：服务器 ip 地址</li>
+<li>port：端口号（取值范围：1024~65535）</li>
+<li>wwwroot：放置静态资源的根目录</li>
+<li>quiet：是否为安静模式</li>
+<li>cors：</li>
+</ul>
+</li>
+<li>访问方式<ul>
+<li>在同个局域网下，那么我们在浏览器中输入地址：<a href="http://10.0.0.34:18103，我们就可以访问到我们服务器中的资源了，当然目前实现的服务器是静态的，只能处理" target="_blank" rel="noopener">http://10.0.0.34:18103，我们就可以访问到我们服务器中的资源了，当然目前实现的服务器是静态的，只能处理</a> get 资源请求，不能够处理 post、put 等其他请求，目前是处理不了的，如果需要自己再处理 post 和 put 等其他的请求的话，那么可以自己去 <a href="https://github.com/NanoHttpd/nanohttpd" target="_blank" rel="noopener">项目原地址</a> 中参考它的用法去实现，在这里就不多讲了。</li>
+</ul>
+</li>
+</ul>
+<h4 id="解决-IP-变化的问题"><a href="#解决-IP-变化的问题" class="headerlink" title="解决 IP 变化的问题"></a>解决 IP 变化的问题</h4><p>在 Android 设备中，它的一个 IP 地址是会变化的，而且每个门店都会有一个自己的内部中控机，那么我们是必须要处理 IP 地址变化的这个问题的。我们的解决方案有如下两个步骤：</p>
+<ol>
+<li>在路由器中根据 Mac 地址，为门店内的中控设备设置固定的 IP 地址</li>
+<li>为每个娃娃机和口红挑战设备提供一个 IP 地址的配置文件，这个文件里面有门店中控的 IP 地址信息，放在 U 盘的指定目录下，但插入设备的时候，由 Rocket 程序将文件从 U 盘中将配置文件 copy 到设备的制定目录下，设备每次启动的时候都需要先读取配置文件，再连接本地的服务器。</li>
+</ol>
+<h3 id="资源什么时候更新"><a href="#资源什么时候更新" class="headerlink" title="资源什么时候更新"></a>资源什么时候更新</h3><p>关于资源更新的，我们首先需要明确我们需要更新的资源有哪些以及我们需要更新的方式。</p>
+<h4 id="更新的资源"><a href="#更新的资源" class="headerlink" title="更新的资源"></a>更新的资源</h4><ul>
+<li>Resource.json</li>
+<li>apk 包</li>
+<li>娃娃机中的显示器轮播图</li>
+<li>娃娃机中显示 banner 的 h5 资源<h4 id="更新的配置文件"><a href="#更新的配置文件" class="headerlink" title="更新的配置文件"></a>更新的配置文件</h4></li>
+<li><p>关于我们资源跟新的所有数据都是保存在 Resource.json 这个文件夹里面的，那么我们每隔 5min 就从中控服务端（局域网内）获取 Resource.json，然后每个类型的资源就根据写在 Resource.json 中的数据进行判断。那么写入 Resource.json 文件中的实现及具体内容如下：</p>
+<ol>
+<li><p>资源的 ResList model</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class ResListModel &#123;</span><br><span class="line">    // 娃娃机 banner 的 h5 资源（index.html等文件）</span><br><span class="line">    public HashMap&lt;String, String&gt; bannerFiles = new HashMap();</span><br><span class="line">    // 门店中所有娃娃机都会显示的轮播图</span><br><span class="line">    // key 为 图片的 hash 值</span><br><span class="line">    // value 为图片的在服务器中的相对路径</span><br><span class="line">    public HashMap&lt;String, String&gt; PublicFiles = new HashMap();</span><br><span class="line">    // 门店中特定娃娃机的私有显示轮播图</span><br><span class="line">    // key 为设备的 id</span><br><span class="line">    // value 为图片图片的 hash 及路径信息（对应 PublicFiles）</span><br><span class="line">    public HashMap&lt;String, HashMap&lt;String, String&gt;&gt; PrivateFiles = new HashMap();</span><br><span class="line">    // 更新的 apk 路径</span><br><span class="line">    public String UpdateApk;</span><br><span class="line">    // 更新的 apk 包名</span><br><span class="line">    public String UpdateApkPackageName;</span><br><span class="line">    // 更新的 apk 版本名</span><br><span class="line">    public String UpdateApkVersion;</span><br><span class="line">    // 更新的 apk 版本号</span><br><span class="line">    public int UpdateApkVersionCode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写入到 Resourse.json 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ResListModel res = new ResListModel();</span><br><span class="line">// 略过添加数据的过程</span><br><span class="line">...;</span><br><span class="line">File resourceFile = new File(baseDir, &quot;Resource.json&quot;);</span><br><span class="line">RandomAccessFile out = new RandomAccessFile(resourceFile, &quot;rw&quot;);</span><br><span class="line">byte[] json = JsonStream.serialize(res).getBytes(&quot;utf-8&quot;);</span><br><span class="line">out.setLength(json.length);</span><br><span class="line">out.write(json);</span><br><span class="line">out.close();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Resourse.json 的内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;PrivateFiles&quot;:&#123;&#125;,</span><br><span class="line">    &quot;PublicFiles&quot;:</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;1A7D3394A6F10D3668FB29D8CCA1CA8B&quot;:&quot;Public/timg.jpg&quot;</span><br><span class="line">        &#125;,</span><br><span class="line">    &quot;UpdateApk&quot;:null,</span><br><span class="line">    &quot;UpdateApkPackageName&quot;:null,</span><br><span class="line">    &quot;UpdateApkVersion&quot;:null,</span><br><span class="line">    &quot;UpdateApkVersionCode&quot;:0,</span><br><span class="line">    &quot;bannerFiles&quot;:</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;C609D70832710E3DCF0FB88918113B18&quot;:&quot;banner/Resource.json&quot;,</span><br><span class="line">            &quot;FC1CF2C83E898357E1AD60CEF87BE6EB&quot;:&quot;banner/app.8113390c.js&quot;,</span><br><span class="line">            &quot;27FBF214DF1E66D0307B7F78FEB8266F&quot;:&quot;banner/manifest.json&quot;,</span><br><span class="line">            &quot;A192A95BFF57FF326185543A27058DE5&quot;:&quot;banner/index.html&quot;,</span><br><span class="line">            &quot;61469B10DBD17FDEEB14C35C730E03C7&quot;:&quot;banner/app.8113390c.css&quot;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="资源图片和-banner-的资源文件的更新"><a href="#资源图片和-banner-的资源文件的更新" class="headerlink" title="资源图片和 banner 的资源文件的更新"></a>资源图片和 banner 的资源文件的更新</h4><ul>
+<li>关于图片和 banner 的资源文件的更新方式是类似的，只是存放的路径不在同一个目录下而已。那么对这类资源的更新，我们是通过技术资源的 hash 值和文件名来进行判断的。娃娃机或者口红挑战设备会每隔 5min 从中控中获取 Resourse.json 文件，然后取出 ResListModel，ResListModel 在之前介绍过了，是保存资源更新的配置文件；之后我们从中取出相对于的配置，首先根据文件名判断该文件是否已经存在本地了，如果不存在，则直接添加到资源更新的列表中，如果存在则再判断 hash 值是否相同，相同就不更新，不相同先将本地的文件删除，然后再将其就添加到更新资源的列表中。</li>
+<li>图片和 banner 资源更新流程图：</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/8/1682acf03c9fed1a?w=554&amp;h=903&amp;f=png&amp;s=26742" alt="资源更新流程图.png"></p>
+<ul>
+<li>中控中计算资源你的 hash 值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">try &#123;</span><br><span class="line">    // banner 资源文件</span><br><span class="line">    String fileName = fileFilter.getAbsolutePath().substring(baseDirLength);</span><br><span class="line">    RandomAccessFile randomAccessFile = new RandomAccessFile(fileFilter,&quot;r&quot;);</span><br><span class="line">    byte[] buf = new byte[(int) randomAccessFile.length()];</span><br><span class="line">    randomAccessFile.read(buf);</span><br><span class="line">    randomAccessFile.close();</span><br><span class="line">    MessageDigest md5 = MessageDigest.getInstance(&quot;md5&quot;);</span><br><span class="line">    byte[] hash = md5.digest(buf);</span><br><span class="line">    String hashStr = ByteToHex(hash,0,hash.length);</span><br><span class="line">    res.bannerFiles.put(hashStr,fileName);</span><br><span class="line">&#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125; catch (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 字节转换为 16 进制</span><br><span class="line">public static String ByteToHex(byte[] bt, int offset, int len) &#123;</span><br><span class="line">    StringBuffer sb = new StringBuffer();</span><br><span class="line">    for (int i = offset; i &lt; offset + len; i++) &#123;</span><br><span class="line">        int tmp = bt[i] &amp; 0xff;</span><br><span class="line">        String tmpStr = Integer.toHexString(tmp);</span><br><span class="line">        if (tmpStr.length() &lt; 2)</span><br><span class="line">            sb.append(&quot;0&quot;);</span><br><span class="line">        sb.append(tmpStr);</span><br><span class="line">    &#125;</span><br><span class="line">    return sb.toString().toUpperCase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>娃娃机设备检查更新（例如：banner 资源文件）</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">public static Observable&lt;Boolean&gt; updateBannerRes(ResListBean resListBean) throws IOException, NoSuchAlgorithmException &#123;</span><br><span class="line">    // 获取远程 banner 的文件</span><br><span class="line">    HashMap&lt;File, String&gt; remoteFiles = new HashMap();</span><br><span class="line">    for (HashMap.Entry&lt;String, String&gt; entry : resListBean.bannerFiles.entrySet()) &#123;</span><br><span class="line">        remoteFiles.put(new File(entry.getValue()), entry.getKey());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    FileUtils.GetFilesInDir(bannerDir,localBannerList,null);</span><br><span class="line">    int baseDirLength = resDir.getAbsolutePath().length()+1;</span><br><span class="line">    // step1：删除本地文件（远程 banner 中没有的文件）</span><br><span class="line">    for (File localFile : localBannerList) &#123;</span><br><span class="line">        File chileFile = new File(localFile.getAbsolutePath().substring(baseDirLength));</span><br><span class="line">        if (!remoteFiles.containsKey(chileFile)) &#123;</span><br><span class="line">            MainActivity.appendAndScrollLog(String.format(&quot;删除 banner 资源文件 %s\n&quot;, localFile.getAbsolutePath()));</span><br><span class="line">            localFile.delete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 下载本地没有的文件</span><br><span class="line">    ArrayList&lt;Observable&lt;File&gt;&gt; taskList = new ArrayList();</span><br><span class="line">    for (Map.Entry&lt;File, String&gt; fileEntry : remoteFiles.entrySet()) &#123;</span><br><span class="line">        File file = new File(resDir,fileEntry.getKey().getAbsolutePath());</span><br><span class="line"></span><br><span class="line">        // step2：本地中存在和远程相同的文件名</span><br><span class="line">        if (localBannerList.contains(file)) &#123;</span><br><span class="line">            // step3：根据 hash 值判断是否为同一文件</span><br><span class="line">            String hashStr = FileUtils.getFileHashStr(file);</span><br><span class="line">            if (TextUtils.equals(hashStr,fileEntry.getValue()))&#123;</span><br><span class="line">                MainActivity.appendAndScrollLog(String.format(&quot;保留 banner 文件 %s\n&quot;, file.getAbsolutePath()));</span><br><span class="line">                taskList.add(Observable.just(file));</span><br><span class="line">                continue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // step4：下载本地没有的文件</span><br><span class="line">        String url = new URL(&quot;http&quot;, Config.instance.centralServerAddress,</span><br><span class="line">                Config.instance.httpPort,</span><br><span class="line">                new File(BuildConfig.APPLICATION_ID, fileEntry.getKey().getAbsolutePath()).getAbsolutePath()).toString();</span><br><span class="line">        // step5：加入文件下载列表</span><br><span class="line">        taskList.add(DownLoadUtils.getDownLoadFile(url,file));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return Observable.concat(taskList)</span><br><span class="line">            .toFlowable(BackpressureStrategy.MISSING)</span><br><span class="line">            .parallel()</span><br><span class="line">            .runOn(Schedulers.io())</span><br><span class="line">            .sequential()</span><br><span class="line">            .toList()</span><br><span class="line">            .observeOn(Schedulers.computation())</span><br><span class="line">            .map(new Function&lt;List&lt;File&gt;, ArrayList&lt;File&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public ArrayList&lt;File&gt; apply(List&lt;File&gt; files) throws Exception &#123;</span><br><span class="line">                    ArrayList&lt;File&gt; list = new ArrayList();</span><br><span class="line">                    for (File file : files) &#123;</span><br><span class="line">                        if (!file.getAbsolutePath().isEmpty()) &#123;</span><br><span class="line">                            list.add(file);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (list.size() &gt; 0) &#123;</span><br><span class="line">                        if (!Utils.EqualCollection(list, localBannerList)) &#123;</span><br><span class="line">                            Collections.sort(list);</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                            list.clear();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    return list;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">            .map(new Function&lt;ArrayList&lt;File&gt;, Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Boolean apply(ArrayList&lt;File&gt; list) throws Exception &#123;</span><br><span class="line">                    if (list.size() &gt; 0) &#123;</span><br><span class="line">                        localBannerList = list;</span><br><span class="line">                        webViewHasLoad = false;</span><br><span class="line">                        loadH5();</span><br><span class="line">                    &#125;</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .observeOn(Schedulers.io())</span><br><span class="line">            .map(new Function&lt;Boolean, Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Boolean apply(Boolean aBoolean) throws Exception &#123;</span><br><span class="line">                    FileUtils.DelEmptyDir(resDir);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .toObservable();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="程序升级的问题"><a href="#程序升级的问题" class="headerlink" title="程序升级的问题"></a>程序升级的问题</h3><p>关于程序的升级，相比较于图片资源的更新要简单许多。</p>
+<ul>
+<li>我们的实现版本更新的步骤如下：<ul>
+<li>step1：找出本地存在的 apk 文件（设备的中的 apk 都是制定路径和制定文件名的），将其删除。</li>
+<li>step2：判断中控中的安装包的版本号是否大于本地程序的版本号，如果是则进入 step3；否则忽略，不需要程序升级</li>
+<li>step3：下载最新版本的 apk 安装包</li>
+<li>step4：下载成功后，发送广播（action：包名；extra：apk文件路径）给 rocket 程序</li>
+<li>step5：rocket 程序接收到广播之后就升级程序</li>
+</ul>
+</li>
+<li>程序升级流程图</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2019/1/8/1682acff1d3b841b?w=554&amp;h=903&amp;f=png&amp;s=22121" alt="版本更新流程.png"></p>
+<ul>
+<li>具体代码实现</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static Observable&lt;Boolean&gt; updateGame(ResListBean res) throws IOException, InterruptedException &#123;</span><br><span class="line">    ArrayList&lt;File&gt; apkList = new ArrayList();</span><br><span class="line">    FileUtils.GetFilesInDir(resDir, apkList, new String[]&#123;</span><br><span class="line">            &quot;.apk&quot;,</span><br><span class="line">    &#125;);</span><br><span class="line">    // 删除本地存在的 apk 包</span><br><span class="line">    for (File file : apkList) &#123;</span><br><span class="line">        file.delete();</span><br><span class="line">    &#125;</span><br><span class="line">    do &#123;</span><br><span class="line">        if (res.UpdateApk == null || res.UpdateApkVersion == null) &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        // 判断是否需要升级</span><br><span class="line">        if (BuildConfig.VERSION_CODE &gt;= res.UpdateApkVersionCode) &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        // apk 的 URL</span><br><span class="line">        final String url = new URL(&quot;http&quot;, Config.instance.centralServerAddress, Config.instance.httpPort, new File(BuildConfig.APPLICATION_ID, res.UpdateApk).getAbsolutePath()).toString();</span><br><span class="line">        MainActivity.appendAndScrollLog(String.format(&quot;下载升级文件 %s\n&quot;, url));</span><br><span class="line">        // 下载 apk 文件</span><br><span class="line">        return DownLoadUtils.getDownLoadFile(url,resDir.getAbsolutePath(),res.UpdateApk)</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .observeOn(Schedulers.io())</span><br><span class="line">                .flatMap(new Function&lt;File, ObservableSource&lt;String&gt;&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public ObservableSource&lt;String&gt; apply(File file) throws Exception &#123;</span><br><span class="line">                        String path = file.getAbsolutePath();</span><br><span class="line">                        MainActivity.appendAndScrollLog(String.format(&quot;升级文件下载完成 %s %s\n&quot;, path, url));</span><br><span class="line">                        PackageManager pm = MainActivity.instance.getPackageManager();</span><br><span class="line">                        PackageInfo pi = pm.getPackageArchiveInfo(path, 0);</span><br><span class="line">                        if (pi == null) &#123;</span><br><span class="line">                            MainActivity.appendAndScrollLog(String.format(&quot;升级文件打开失败 %s\n&quot;, path));</span><br><span class="line">                            return Observable.just(&quot;&quot;);</span><br><span class="line">                        &#125;</span><br><span class="line">                        MainActivity.appendAndScrollLog(String.format(&quot;升级文件对比：Native(%s %s)/Remote(%s %s)\n&quot;, BuildConfig.APPLICATION_ID, BuildConfig.VERSION_NAME, pi.packageName, pi.versionName));</span><br><span class="line">                        if (!BuildConfig.APPLICATION_ID.equals(pi.packageName)</span><br><span class="line">                                || BuildConfig.VERSION_CODE &gt;= pi.versionCode) &#123;</span><br><span class="line">                            return Observable.just(&quot;&quot;);</span><br><span class="line">                        &#125;</span><br><span class="line">                        return Observable.just(path);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .flatMap(new Function&lt;String, Observable&lt;Boolean&gt;&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public Observable&lt;Boolean&gt; apply(String updateApk) throws Exception &#123;</span><br><span class="line">                        if (!updateApk.isEmpty()) &#123;</span><br><span class="line">                            Log.e(TAG, &quot;等待游戏结束后安装升级文件...&quot;);</span><br><span class="line">                            MainActivity.appendAndScrollLog(&quot;等待游戏结束后安装升级文件...\n&quot;);</span><br><span class="line">                            synchronized (GamePlay.class) &#123;//防止在游戏运行时更新版本</span><br><span class="line">                                Log.e(TAG, &quot;发布广播&quot;);</span><br><span class="line">                                Intent intent = new Intent();</span><br><span class="line">                                intent.setAction(Config.updateBroadcast);</span><br><span class="line">                                intent.putExtra(&quot;apk&quot;, updateApk);</span><br><span class="line">                                MainActivity.instance.sendBroadcast(intent);</span><br><span class="line">                                System.exit(0);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                        return Observable.just(true);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">    &#125; while (false);</span><br><span class="line">    return Observable.just(true);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="资源文件下载"><a href="#资源文件下载" class="headerlink" title="资源文件下载"></a>资源文件下载</h3><p>关于资源文件的下载，我是选择 <a href="https://github.com/lingochamp/okdownload" target="_blank" rel="noopener">okdownload</a>。okdownload 是一个支持多线程，多任务，断点续传，可靠，灵活，高性能以及强大的下载引擎。详情可以去看 <a href="https://github.com/lingochamp/okdownload" target="_blank" rel="noopener">okdownload GitHub 地址</a></p>
+<ul>
+<li><p>依赖方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;com.liulishuo.okdownload:okdownload:1.0.5&apos;</span><br><span class="line">implementation &apos;com.liulishuo.okdownload:okhttp:1.0.5&apos;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简单实用示例</p>
+</li>
+</ul>
+<p><strong>单文件下载</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">DownloadTask task = new DownloadTask.Builder(url, parentFile)</span><br><span class="line">         .setFilename(filename)</span><br><span class="line">         // the minimal interval millisecond for callback progress</span><br><span class="line">         .setMinIntervalMillisCallbackProcess(30)</span><br><span class="line">         // do re-download even if the task has already been completed in the past.</span><br><span class="line">         .setPassIfAlreadyCompleted(false)</span><br><span class="line">         .build();</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">task.enqueue(listener);</span><br><span class="line"> </span><br><span class="line">// cancel</span><br><span class="line">task.cancel();</span><br><span class="line"> </span><br><span class="line">// execute task synchronized</span><br><span class="line">task.execute(listener);</span><br></pre></td></tr></table></figure></p>
+<p><strong>多文件下载</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">final DownloadTask[] tasks = new DownloadTask[2];</span><br><span class="line">tasks[0] = new DownloadTask.Builder(&quot;url1&quot;, &quot;path&quot;, &quot;filename1&quot;).build();</span><br><span class="line">tasks[1] = new DownloadTask.Builder(&quot;url2&quot;, &quot;path&quot;, &quot;filename1&quot;).build();</span><br><span class="line">DownloadTask.enqueue(tasks, listener);</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>结合 Rxjava 实现文件下载<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class DownLoadUtils &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 从中控下载文件到本地</span><br><span class="line">     * @param url</span><br><span class="line">     * @param parentPath            保存到本地文件的父文件路径</span><br><span class="line">     * @param downloadFileName      保存到本地的文件名</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static Observable&lt;File&gt; getDownLoadFile(String url,String parentPath,String downloadFileName)&#123;</span><br><span class="line">        // 下载本地没有的文件</span><br><span class="line">        MainActivity.appendAndScrollLog(String.format(&quot;开始下载资源文件 %s\n&quot;, url));</span><br><span class="line">        final DownloadTask task = new DownloadTask.Builder(url, parentPath, downloadFileName).build();</span><br><span class="line">        return Observable.create(new ObservableOnSubscribe&lt;File&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void subscribe(final ObservableEmitter&lt;File&gt; emitter) throws Exception &#123;</span><br><span class="line">                task.enqueue(new DownloadListener2() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void taskStart(DownloadTask task) &#123;</span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    @Override</span><br><span class="line">                    public void taskEnd(DownloadTask task, EndCause cause, Exception realCause) &#123;</span><br><span class="line">                        if (cause != EndCause.COMPLETED) &#123;</span><br><span class="line">                            MainActivity.appendAndScrollLog(String.format(&quot;资源文件下载失败 %s %s\n&quot;, cause.toString(), task.getUrl()));</span><br><span class="line">                            emitter.onNext(new File(&quot;&quot;));</span><br><span class="line">                            emitter.onComplete();</span><br><span class="line">                            return;</span><br><span class="line">                        &#125;</span><br><span class="line">                        File file = task.getFile();</span><br><span class="line">                        MainActivity.appendAndScrollLog(String.format(&quot;资源文件下载完成 %s\n&quot;, file.getAbsolutePath()));</span><br><span class="line">                        emitter.onNext(file);</span><br><span class="line">                        emitter.onComplete();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).retry();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 从中控下载文件到本地</span><br><span class="line">     * @param url</span><br><span class="line">     * @param saveFile  保存到本地的文件</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static Observable&lt;File&gt; getDownLoadFile(String url, File saveFile)&#123;</span><br><span class="line">        return getDownLoadFile(url,saveFile.getParentFile().getAbsolutePath(),saveFile.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="屏蔽下拉菜单和底部导航栏"><a href="#屏蔽下拉菜单和底部导航栏" class="headerlink" title="屏蔽下拉菜单和底部导航栏"></a>屏蔽下拉菜单和底部导航栏</h2><p>像娃娃机和格子机这些设备都是在线下直接面向用户的，因此我们不能将我们的 Android 设备全部都展现给我们的用户，我们需要对用户的行为做些限制，例如禁止用户通过导航栏或者下拉菜单退出当前程序，防止他们做出一些危险的操作。我的解决方案是把当前的 rocket 程序设置为默认启动和桌面应用程序，并将 Android 设备中自带的 launcher 程序 和 systemui 程序给禁用掉，那么设备一开始启动的时候就会启动我们的 rocket 应用，并成功的禁止了用户使用导航栏和下拉菜单来做非法的操作。</p>
+<ul>
+<li><p>查找 Android 设备中自带的 launcher 程序 和 systemui 程序的对应包名</p>
+<ul>
+<li>我们使用 adb shell pm list packages 就可以找出设备中已经安装的程序列表，主要是以包名显示的。</li>
+<li><p><strong>查找 launcher 程序的包名</strong>，找出包名为：com.android.launcher3</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LW-PC0920@lw1002022 MINGW64 ~/Desktop</span><br><span class="line">$ adb shell pm list packages | grep launcher</span><br><span class="line">package:com.android.launcher3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查找 systemui 程序的包名</strong>：找出包名为：com.android.systemui</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">LW-PC0920@lw1002022 MINGW64 ~/Desktop</span><br><span class="line">$ adb shell pm list packages | grep systemui</span><br><span class="line">package:com.android.systemui</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>禁止 Android 设备中自带的 launcher 程序 和 systemui 程序的使用</p>
+<ul>
+<li><p>禁止 launcher 程序的使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell pm disable com.android.launcher3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>禁止 systemui 程序的使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell pm disable com.android.systemui</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>代码实现禁止 Android 设备中自带的 launcher 程序 和 systemui 程序的使用</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public static void enableLauncher(Boolean enabled) &#123;</span><br><span class="line">    List&lt;PackageInfo&gt; piList = MainActivity.instance.packageManager.getInstalledPackages(0);</span><br><span class="line">    ArrayList&lt;String&gt; packages = new ArrayList();</span><br><span class="line">    for (PackageInfo pi : piList) &#123;</span><br><span class="line">        String name = pi.packageName;</span><br><span class="line">        if (name.contains(&quot;systemui&quot;) || name.contains(&quot;launcher&quot;)) &#123;</span><br><span class="line">            packages.add(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    for (String packageName : packages) &#123;</span><br><span class="line">        su(String.format(&quot;pm %s %s\n&quot;, enabled ? &quot;enable&quot; : &quot;disable&quot;, packageName));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> *  执行 adb 指令</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">public static int su(String cmd) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        Process p = Runtime.getRuntime().exec(&quot;su&quot;);</span><br><span class="line">        DataOutputStream os = new DataOutputStream(p.getOutputStream());</span><br><span class="line">        os.writeBytes(cmd);</span><br><span class="line">        os.writeBytes(&quot;exit\n&quot;);</span><br><span class="line">        os.flush();</span><br><span class="line">        os.close();</span><br><span class="line">        return p.waitFor();</span><br><span class="line">    &#125; catch (Exception ex) &#123;</span><br><span class="line">        return -1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Iot-的实现"><a href="#Iot-的实现" class="headerlink" title="Iot 的实现"></a>Iot 的实现</h2><p>关于 IoT 的实现，我们这边使用的是阿里的《微消息队列 for IoT》服务，关于《微消息队列 for IoT》服务，阿里的解释如下：</p>
+<blockquote>
+<p>微消息队列 for IoT 是消息队列（MQ）的子产品。针对用户在移动互联网以及物联网领域的存在的特殊消息传输需求，消息队列（MQ） 通过推出微消息队列 for IoT 开放了对 MQTT 协议的完整支持</p>
+</blockquote>
+<ul>
+<li>MQTT 协议？<ul>
+<li>MQTT 的全称是：Message Queuing Telemetry Transport（ 消息队列遥测传输），是一种轻量的，基于发布订阅模型的即时通讯协议。该协议设计开放，协议简单，平台支持丰富，几乎可以把所有联网物品和外部连接起来，因此在移动互联网和物联网领域拥有众多优势。</li>
+</ul>
+</li>
+<li>MQTT 的特点<ul>
+<li>使用发布/订阅（Pub/Sub）消息模式，提供一对多的消息分发，解除了应用程序之间的耦合；</li>
+<li>对负载内容屏蔽的消息传输；</li>
+<li>使用 TCP/IP 提供基础的网络连接；</li>
+<li>有三种级别的消息传递服务；</li>
+<li>小型传输，开销很小（头部长度固定为 2 字节），协议交换最小化，以降低网络流量。</li>
+</ul>
+</li>
+<li>关键名词的解释<br>  名词|解释<br>  –|–<br>  Parent Topic|MQTT 协议基于 Pub/Sub 模型，因此任何消息都属于一个 Topic。根据 MQTT 协议，Topic 存在多级，定义第一级 Topic 为父 Topic（Parent Topic），使用 MQTT 前，该 Parent Topic 需要先在 MQ 控制台创建。<br>  Subtopic|MQTT 的二级 Topic，甚至三级 Topic 都是父 Topic 下的子类。使用时，直接在代码里设置，无需创建。需要注意的是 MQTT 限制 Parent Topic 和 Subtopic 的总长度为64个字符，如果超出长度限制将会导致客户端异常。<br>  Client ID|MQTT 的 Client ID 是每个客户端的唯一标识，要求全局唯一，使用相同的 Client ID 连接 MQTT 服务会被拒绝<h3 id="Android-中实现-iot"><a href="#Android-中实现-iot" class="headerlink" title="Android 中实现 iot"></a>Android 中实现 iot</h3><blockquote>
+<p>关于显示 iot 连接的实现过程是这样的：首先我们将设备的三元组从管理后台中批量生成，文件名的格式为 <strong>deviceName.json</strong>(例如：00001.json)，里面是关于每个设备的三元组信息；接着我们将装有三元组文件的 U 盘插入到 Android 设备中（娃娃机或者口红挑战）；rocket 程序会自动监测到 U 盘的插入并将文件剪切到 Android  设备的制定目录下；再接着 Android 设备可以去读取指定文件中三元组信息；最后使用此三元组进行连接 mqtt。</p>
+</blockquote>
+</li>
+<li>添加依赖</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0&apos;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>关于三元组</p>
+<ul>
+<li><p>在 Android 设备中需要关心的三个东西，mqtt 协议中用来识别一个设备的必要三要素，如果存在相同的三元组，那么必然出错，导致mqtt 频繁断开重连。三元组这个主要是在阿里的管理后台生成的，Android 设备这端只需要拿来用就可以了。</p>
+<p>属性|用处<br>–|–<br>productKey|对应程序的 key，类似于 appid<br>deviceName|对应上述的 Client ID，用来唯一识别一台 Android 设备的<br>deviceSecret|使用 HmacSHA1 算法计算签名字符串，并将签名字符串设置到 Password 参数中用于鉴权</p>
+</li>
+</ul>
+</li>
+<li><p>关于订阅的 topic</p>
+<ul>
+<li>关于 topic 是在阿里云的后台管理中进行设置的，我们的收发消息都是通过这些 topic 来进行的。 </li>
+</ul>
+</li>
+<li><p>代码实现 iot 连接</p>
+<ul>
+<li><p><strong>剪切三元组配置文件</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 剪切配置文件（三元组）</span><br><span class="line"> * @param packageName</span><br><span class="line"> */</span><br><span class="line">public static void moveConfig(String packageName) &#123;</span><br><span class="line">    File usbConfigDir = new File(UsbStorage.usbPath, Config.wejoyConfigDirInUsb);</span><br><span class="line">    File extProjectDir = new File(Environment.getExternalStorageDirectory(), Config.resourceDirName);</span><br><span class="line">    File extConfigFile = new File(extProjectDir, Config.wejoyConfigFileInSdcard);</span><br><span class="line">    if (!usbConfigDir.exists() || extConfigFile.exists()) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    extProjectDir.mkdirs();</span><br><span class="line">    File[] configFiles = usbConfigDir.listFiles();</span><br><span class="line">    if (configFiles.length &gt; 0) &#123;</span><br><span class="line">        Arrays.sort(configFiles);</span><br><span class="line">        moveFile(configFiles[0], extConfigFile);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void moveFile(File src, File dst) &#123;</span><br><span class="line">    su(String.format(&quot;mv -f %s %s\n&quot;, src.getAbsolutePath(), dst.getAbsolutePath()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>读取指定路径的配置文件信息(三元组）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public static File configFile = new File(new File(Environment.getExternalStorageDirectory(), &quot;WejoyRes&quot;), &quot;Config.json&quot;);</span><br><span class="line"></span><br><span class="line">static void read() throws IOException &#123;</span><br><span class="line">    if (configFile.exists()) &#123;</span><br><span class="line">        RandomAccessFile in = new RandomAccessFile(configFile, &quot;r&quot;);</span><br><span class="line">        byte[] buf = new byte[(int) configFile.length()];</span><br><span class="line">        in.read(buf);</span><br><span class="line">        in.close();</span><br><span class="line">        instance = JsonIterator.deserialize(new String(buf, &quot;utf-8&quot;), Config.class);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        instance = new Config();</span><br><span class="line">    &#125;</span><br><span class="line">    mqttRequestTopic = String.format(&quot;/sys/%s/%s/rrpc/request/&quot;, instance.productKey, instance.deviceName);</span><br><span class="line">    mqttResponseTopic = String.format(&quot;/sys/%s/%s/rrpc/response/&quot;, instance.productKey, instance.deviceName);</span><br><span class="line">    mqttPublishTopic = String.format(&quot;/%s/%s/update&quot;, instance.productKey, instance.deviceName);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>连接 mqtt</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static void init() &#123;</span><br><span class="line">    instance = new IoT();</span><br><span class="line">    DeviceInfo deviceInfo = new DeviceInfo();</span><br><span class="line">    deviceInfo.productKey = Config.instance.productKey;</span><br><span class="line">    deviceInfo.deviceName = Config.instance.deviceName;</span><br><span class="line">    deviceInfo.deviceSecret = Config.instance.deviceSecret;</span><br><span class="line">    final LinkKitInitParams params = new LinkKitInitParams();</span><br><span class="line">    params.deviceInfo = deviceInfo;</span><br><span class="line">    params.connectConfig = new IoTApiClientConfig();</span><br><span class="line">    LinkKit.getInstance().registerOnPushListener(instance);</span><br><span class="line">    initDisposable = Observable.interval(0, Config.instance.mqttConnectIntervalSeconds, TimeUnit.SECONDS)</span><br><span class="line">            .subscribeOn(Schedulers.io())</span><br><span class="line">            .observeOn(Schedulers.io())</span><br><span class="line">            .map(new Function&lt;Long, Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Boolean apply(Long aLong) throws Exception &#123;</span><br><span class="line">                    if (!initialized) &#123;</span><br><span class="line">                        LinkKit.getInstance().init(MainActivity.instance, params, instance);</span><br><span class="line">                    &#125;</span><br><span class="line">                    return initialized;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .subscribe(new Consumer&lt;Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void accept(Boolean aBoolean) throws Exception &#123;</span><br><span class="line">                    if (aBoolean) &#123;</span><br><span class="line">                        initDisposable.dispose();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>发送消息：</strong><br>发送消息的时候，我们需要指定 topic，否则服务器无法接收到我们的消息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    static void publish(String json) &#123;</span><br><span class="line">    Log.e(TAG, &quot;publish: &quot;+json );</span><br><span class="line">    MqttPublishRequest res = new MqttPublishRequest();</span><br><span class="line">    res.isRPC = false;</span><br><span class="line">    res.topic = Config.mqttPublishTopic;</span><br><span class="line">    res.payloadObj = json;</span><br><span class="line">    LinkKit.getInstance().publish(res, new IConnectSendListener() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void onResponse(ARequest aRequest, AResponse aResponse) &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public void onFailure(ARequest aRequest, AError aError) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>接收消息：</strong> 接收消息的时候，我们也需要判断是来自哪个 topic 中的，除了我们指定的 topic，其他的 topic 我们都不做处理；当我们接收到服务器中发送来的消息的时候，我们是先判断消息的类型，然后根据相对应的类型做出不同的反应。例如我们收到后台请求给娃娃机的上分的指令，那么我们就向设备中的硬件模块发送上分的指令，并等待设备反应并给后台发送一条响应信息。这条响应的消息是需要在指定的时间内完成，否则认为超时。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void onNotify(String s, final String topic, final AMessage aMessage) &#123;</span><br><span class="line">    if (!topic.startsWith(Config.mqttRequestTopic)) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    Observable.create(new ObservableOnSubscribe&lt;MqttMessage&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void subscribe(ObservableEmitter&lt;MqttMessage&gt; emitter) throws Exception &#123;</span><br><span class="line">            MqttMessage msg = JsonIterator.deserialize(new String((byte[]) aMessage.data, &quot;utf-8&quot;), MqttMessage.class);</span><br><span class="line">            if (msg == null) &#123;</span><br><span class="line">                return;</span><br><span class="line">            &#125;</span><br><span class="line">            emitter.onNext(msg);</span><br><span class="line">            emitter.onComplete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">            .subscribeOn(Schedulers.io())</span><br><span class="line">            .observeOn(Schedulers.io())</span><br><span class="line">            .flatMap(new Function&lt;MqttMessage, ObservableSource&lt;MqttMessage&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public ObservableSource&lt;MqttMessage&gt; apply(MqttMessage msg) throws Exception &#123;</span><br><span class="line">                    Log.e(TAG, &quot;收到消息  key:&quot;+msg.key+&quot; msg:&quot;+msg.body.m);</span><br><span class="line">                    switch (msg.key) &#123;</span><br><span class="line">                        case &quot;h&quot;: &#123;//</span><br><span class="line">                            SetHeartBeatDownstream setHeartBeatDownstream = msg.body.m.as(SetHeartBeatDownstream.class);</span><br><span class="line">                            // 和设备进行通信，并等待设备的响应</span><br><span class="line">                            return Device.setHeartBeat(setHeartBeatDownstream);</span><br><span class="line">                        &#125;</span><br><span class="line">                        case &quot;b&quot;: &#123;//</span><br><span class="line">                            AddCoinsDownstream addCoinsDownstream = msg.body.m.as(AddCoinsDownstream.class);</span><br><span class="line">                            // 和设备进行通信，并等待设备的响应</span><br><span class="line">                            return Device.addCoins(addCoinsDownstream);</span><br><span class="line">                        &#125;</span><br><span class="line">                        case &quot;g&quot;: &#123;//</span><br><span class="line">                            // 和设备进行通信，并等待设备的响应</span><br><span class="line">                            return Device.getParam();</span><br><span class="line">                        &#125;</span><br><span class="line">                        case &quot;s&quot;: &#123;//</span><br><span class="line">                            SetParamDownstream setParamDownstream = msg.body.m.as(SetParamDownstream.class);</span><br><span class="line">                            // 和设备进行通信，并等待设备的响应</span><br><span class="line">                            return Device.setParam(setParamDownstream);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    return Observable.never();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .observeOn(Schedulers.io())</span><br><span class="line">            .map(new Function&lt;MqttMessage, Boolean&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Boolean apply(MqttMessage msg) throws Exception &#123;</span><br><span class="line">                    MqttPublishRequest res = new MqttPublishRequest();</span><br><span class="line">                    res.isRPC = false;</span><br><span class="line">                    res.topic = topic.replace(&quot;request&quot;, &quot;response&quot;);</span><br><span class="line">                    //res.msgId = topic.split(&quot;/&quot;)[6];</span><br><span class="line">                    res.payloadObj = JsonStream.serialize(msg);</span><br><span class="line">                    LinkKit.getInstance().publish(res, new IConnectSendListener() &#123;</span><br><span class="line">                        @Override</span><br><span class="line">                        public void onResponse(ARequest aRequest, AResponse aResponse) &#123;</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        @Override</span><br><span class="line">                        public void onFailure(ARequest aRequest, AError aError) &#123;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                    return true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;)</span><br><span class="line">            .subscribe();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="Android-和硬件通信"><a href="#Android-和硬件通信" class="headerlink" title="Android 和硬件通信"></a>Android 和硬件通信</h2><p>在娃娃机和口红挑战的这两个设备中，我们都需要和设备进行通信，例如：娃娃机投币、娃娃机出礼反馈、按下选中口红的格子等等这些都是需要和硬件模块进行通信的。在关于串口通信的框架选择方面，我们主要是选择 Google 的 android-serialport-api 来实现。<a href="https://github.com/licheedev/Android-SerialPort-API" target="_blank" rel="noopener">项目原地址</a></p>
+<ul>
+<li><p>依赖方式</p>
+<ol>
+<li><p>在根build.gradle中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        ...</span><br><span class="line">        maven &#123; url &apos;https://jitpack.io&apos; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>子module添加依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    implementation &apos;com.github.licheedev.Android-SerialPort-API:serialport:1.0.1&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>修改su路径</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// su默认路径为 &quot;/system/bin/su&quot;</span><br><span class="line">// 可通过此方法修改</span><br><span class="line">SerialPort.setSuPath(&quot;/system/xbin/su&quot;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>连接方式</p>
+<blockquote>
+<p>连接串口的时候需要指定串口号以及波特率，之后定时处理机器发送的指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">static void init() throws IOException &#123;</span><br><span class="line">    SerialPort.setSuPath(&quot;/system/xbin/su&quot;);</span><br><span class="line">    // 设置串口号及波特率</span><br><span class="line">    serialPort = new SerialPort(Config.serialPort, Config.baudrate);</span><br><span class="line">    // 接收指令流</span><br><span class="line">    inputStream = serialPort.getInputStream();</span><br><span class="line">    // 发送指令流</span><br><span class="line">    outputStream = serialPort.getOutputStream();</span><br><span class="line">    // 每隔 100ms 处理机器信息</span><br><span class="line">    Observable.interval(100, TimeUnit.MILLISECONDS)</span><br><span class="line">            .observeOn(serialScheduler)</span><br><span class="line">            .subscribe(new Consumer&lt;Long&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public void accept(Long aLong) throws Exception &#123;</span><br><span class="line">                    // 处理机器发送的指令</span><br><span class="line">                    handleRecv();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>向机器发送指令</p>
+<blockquote>
+<p>向机器发送指令的时候是结合 Rxjava 来实现的。除此之外，向机器发送指令是需要有规定格式的（内部制定的通信协议），我们发送及接收数据都是一个字节数组，因此我们格式是需要严格按照我们制定的协议进行的，如下是娃娃机投币的简单示例：</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static ObservableSource&lt;MqttMessage&gt; addCoins(final AddCoinsDownstream msg) &#123;</span><br><span class="line">    return Observable.create(new ObservableOnSubscribe&lt;MqttMessage&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public void subscribe(ObservableEmitter&lt;MqttMessage&gt; emitter) throws Exception &#123;</span><br><span class="line">            currentUser = msg.u;</span><br><span class="line">            currentHeadUrl = msg.h;</span><br><span class="line">            currentNickname = msg.nk;</span><br><span class="line">            byte[] buf = new byte[]&#123;0x11, addCoinsCmd, msg.num, msg.c, 0, 0x00, 0x00&#125;;</span><br><span class="line">            byte[] ret = sign(buf);</span><br><span class="line">            try &#123;</span><br><span class="line">                outputStream.write(ret);</span><br><span class="line">            &#125; catch (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            penddingCmd = addCoinsCmd;</span><br><span class="line">            penddingEmitter = emitter;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">            .subscribeOn(serialScheduler);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接收机器指令<blockquote>
+<p>关于接受机器消息这一块是每隔 100ms 进行的，在处理机器指令的时候，首先需要过滤到无效的字节，之后再按照我们制定的协议来处理消息，判断是娃娃机上分，还是游戏结果等信息，最后并对机器的数据返回进行 CRC16 校验。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">static void handleRecv() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        for (; ; ) &#123;</span><br><span class="line">            int len = inputStream.available();</span><br><span class="line">            if (len &lt;= 0) &#123;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">            len = inputStream.read(buf, bufReadOffset, buf.length - bufReadOffset);</span><br><span class="line">            //Log.d(&quot;serialPort&quot;, String.format(&quot;read: %s&quot;, byteToHex(buf, bufReadOffset, len)));</span><br><span class="line">            bufReadOffset += len;</span><br><span class="line">            for (; ; ) &#123;</span><br><span class="line">                if (bufParseEnd == -1) &#123;</span><br><span class="line">                    for (; bufParseStart &lt; bufReadOffset; bufParseStart++) &#123;</span><br><span class="line">                        if (buf[bufParseStart] == (byte) 0xAA) &#123;</span><br><span class="line">                            bufParseEnd = bufParseStart + 1;</span><br><span class="line">                            break;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                if (bufParseEnd != -1) &#123;</span><br><span class="line">                    for (; bufParseEnd &lt; bufReadOffset; bufParseEnd++) &#123;</span><br><span class="line">                        if (buf[bufParseEnd] == (byte) 0xAA) &#123;</span><br><span class="line">                            bufParseStart = bufParseEnd;</span><br><span class="line">                            bufParseEnd += 1;</span><br><span class="line">                            continue;</span><br><span class="line">                        &#125;</span><br><span class="line">                        if (buf[bufParseEnd] == (byte) 0xDD) &#123;</span><br><span class="line">                            if (bufParseEnd - bufParseStart &gt;= 5) &#123;</span><br><span class="line">                                bufParseEnd += 1;</span><br><span class="line">                                byte size = buf[bufParseStart + 1];</span><br><span class="line">                                byte index = buf[bufParseStart + 2];</span><br><span class="line">                                byte cmd = buf[bufParseStart + 3];</span><br><span class="line">                                byte check = (byte) (size ^ index ^ cmd);</span><br><span class="line">                                for (int i = bufParseStart + 4; i &lt; bufParseEnd - 2; i++) &#123;</span><br><span class="line">                                    check ^= buf[i];</span><br><span class="line">                                &#125;</span><br><span class="line">                                if (check == buf[bufParseEnd - 2]) &#123;</span><br><span class="line">                                    //Log.d(&quot;serialPort&quot;, String.format(&quot;protocol: %s, size: %d, index: %d, cmd: %d, check: %d, data: %s&quot;, byteToHex(buf, bufParseStart, bufParseEnd - bufParseStart), size, index, cmd, check, byteToHex(buf, bufParseStart + 4, size - 3)));</span><br><span class="line">                                    switch (cmd) &#123;</span><br><span class="line">                                        // 心跳</span><br><span class="line">                                        case heartBeatCmd: &#123;</span><br><span class="line">                                        &#125;</span><br><span class="line">                                        break;</span><br><span class="line">                                        </span><br><span class="line">                                        // 上分</span><br><span class="line">                                        case addCoinsCmd: &#123;</span><br><span class="line">                                            </span><br><span class="line">                                        &#125;</span><br><span class="line">                                        break;</span><br><span class="line">                                        </span><br><span class="line">                                        // 游戏结果</span><br><span class="line">                                        case gameResultCmd: &#123;</span><br><span class="line">                                            boolean gift = buf[bufParseStart + 7] != 0;</span><br><span class="line">                                            IoT.sendGameResult(gift);</span><br><span class="line">                                            if (gift) &#123;</span><br><span class="line">                                                // 发送用户信息到中控，进行排行榜显示</span><br><span class="line">                                                WSSender.getInstance().sendUserInfo(currentUser, currentHeadUrl, currentNickname);</span><br><span class="line">                                            &#125;</span><br><span class="line">                                        &#125;</span><br><span class="line">                                        break;</span><br><span class="line">                                        default:</span><br><span class="line">                                            break;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                            bufParseStart = bufParseEnd;</span><br><span class="line">                            bufParseEnd = -1;</span><br><span class="line">                            break;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                if (bufParseStart &gt;= bufReadOffset || bufParseEnd &gt;= bufReadOffset) &#123;</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (bufReadOffset == buf.length) &#123;</span><br><span class="line">                System.arraycopy(buf, bufParseStart, buf, 0, bufReadOffset - bufParseStart);</span><br><span class="line">                if (bufParseEnd != -1) &#123;</span><br><span class="line">                    bufParseEnd -= bufParseStart;</span><br><span class="line">                    bufReadOffset = bufParseEnd;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    bufReadOffset = 0;</span><br><span class="line">                &#125;</span><br><span class="line">                bufParseStart = 0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+</ul>
+<h2 id="websocket-通信"><a href="#websocket-通信" class="headerlink" title="websocket 通信"></a>websocket 通信</h2><p>在中控和娃娃机进行通信的方式我们是选择 websocket 进行的。中控端是 server，然后娃娃机是 client。</p>
+<h3 id="server"><a href="#server" class="headerlink" title="server"></a>server</h3><ul>
+<li><p>Server 的实现：目前 server 的实现只是为了接收娃娃机的数据反馈，所以并没有什么复杂的操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class WSServer extends WebSocketServer &#123;</span><br><span class="line">    private MainActivity mainActivity;</span><br><span class="line"></span><br><span class="line">    public void setMainActivity(MainActivity mainActivity) &#123;</span><br><span class="line">        this.mainActivity = mainActivity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    WSServer(InetSocketAddress address) &#123;</span><br><span class="line">        super(address);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onOpen(WebSocket conn, ClientHandshake handshake) &#123;</span><br><span class="line">        mainActivity.appendAndScrollLog(&quot;客户端：&quot; + conn.getRemoteSocketAddress() + &quot; 已连接\n&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onClose(WebSocket conn, int code, String reason, boolean remote) &#123;</span><br><span class="line">        mainActivity.appendAndScrollLog(&quot;客户端：&quot; + conn.getRemoteSocketAddress() + &quot; 已断开\n&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onMessage(WebSocket conn, final String message) &#123;</span><br><span class="line">        Observable.create(new ObservableOnSubscribe&lt;SocketMessage&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void subscribe(ObservableEmitter&lt;SocketMessage&gt; emitter) throws Exception &#123;</span><br><span class="line">                final SocketMessage socketMessage = JsonIterator.deserialize(message, SocketMessage.class);</span><br><span class="line">                emitter.onNext(socketMessage);</span><br><span class="line">                emitter.onComplete();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">                .subscribeOn(Schedulers.newThread())</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(new Consumer&lt;SocketMessage&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(SocketMessage socketMessage) throws Exception &#123;</span><br><span class="line">                        if (socketMessage.getCode() == SocketMessage.TYPE_USER) &#123;</span><br><span class="line">                            // 夹到娃娃</span><br><span class="line">                            </span><br><span class="line">                        &#125; else if (socketMessage.getCode() == SocketMessage.TYPE_SAY_HELLO) &#123;</span><br><span class="line">                            // 连接招呼语</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onError(WebSocket conn, Exception ex) &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onStart() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>简单使用方式</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">appendAndScrollLog(&quot;初始化WebSocket服务...\n&quot;);</span><br><span class="line">WSServer wsServer = new WSServer(18104);</span><br><span class="line">wsServer.setMainActivity(MainActivity.this);</span><br><span class="line">wsServer.setConnectionLostTimeout(5);</span><br><span class="line">wsServer.setReuseAddr(true);</span><br><span class="line">wsServer.start();</span><br><span class="line">appendAndScrollLog(&quot;初始化WebSocket服务完成\n&quot;);</span><br></pre></td></tr></table></figure>
+<h3 id="client"><a href="#client" class="headerlink" title="client"></a>client</h3><p>在 client 端，目前需要做的人物有断开重连以及数据发送的操作。断开重连的时候需要在新的子线程中进行，否则会报如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">You cannot initialize a reconnect out of the websocket thread. Use reconnect in another thread to insure a successful cleanup</span><br></pre></td></tr></table></figure>
+<p>因此，我们每次断开重新的时候是需要在新的子线程中进行的。除此之外，在发送数据的时候，如果刚好 socket 没有连接上，那么发送数据是会报异常的，因此我们有数据要发送的时候如果 socket 没有连接，那么就先缓存到本地，等到 socket 连接上之后再把滞留的数据一次性发送出去。</p>
+<ul>
+<li>依赖配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation &apos;org.java-websocket:Java-WebSocket:1.3.9&apos;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>WSClient.java</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">class WSClient extends WebSocketClient &#123;</span><br><span class="line"></span><br><span class="line">    private static final String TAG = &quot;WSClient&quot;;</span><br><span class="line">    private static WSClient instance;</span><br><span class="line">    private static URI sUri;</span><br><span class="line">    private WSReceiver mWSReceiver;</span><br><span class="line">    private Disposable mReconnectDisposable;</span><br><span class="line">    private ConnectCallback mConnectCallback;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * step 1:需要先调用，设置 url</span><br><span class="line">     * @param uri</span><br><span class="line">     */</span><br><span class="line">    public static void setUri(URI uri)&#123;</span><br><span class="line">        sUri = uri;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * step 1:</span><br><span class="line">     * 需要先调用，设置服务端的 url</span><br><span class="line">     * @param ipAddress</span><br><span class="line">     * @param port</span><br><span class="line">     */</span><br><span class="line">    public static void setUri(String ipAddress,int port)&#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            sUri = new URI(String.format(&quot;ws://%s:%d&quot;, ipAddress, port));</span><br><span class="line">        &#125; catch (URISyntaxException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public static WSClient getInstance()&#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            synchronized (WSClient.class)&#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new WSClient(sUri);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * step 2：连接 websocket</span><br><span class="line">     */</span><br><span class="line">    public void onConnect()&#123;</span><br><span class="line">        setConnectionLostTimeout(Config.instance.webSocketTimeoutSeconds);</span><br><span class="line">        setReuseAddr(true);</span><br><span class="line">        connect();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private WSClient(URI server) &#123;</span><br><span class="line">        super(server);</span><br><span class="line">        // 初始化消息发送者</span><br><span class="line">        WSSender.getInstance().setWSClient(this);</span><br><span class="line">        // 初始化消息接收者</span><br><span class="line">        mWSReceiver = new WSReceiver();</span><br><span class="line">        mWSReceiver.setWSClient(this);</span><br><span class="line">        mWSReceiver.setWSSender(WSSender.getInstance());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onOpen(ServerHandshake handshakedata) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onOpen: &quot;);</span><br><span class="line">        MainActivity.appendAndScrollLog(&quot;websocket 已连接\n&quot;);</span><br><span class="line">        Observable.just(&quot;&quot;)</span><br><span class="line">                .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(new Consumer&lt;Object&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Object o) throws Exception &#123;</span><br><span class="line">                        if (mConnectCallback != null) &#123;</span><br><span class="line">                            mConnectCallback.onWebsocketConnected();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">        // 清除滞留的所有消息</span><br><span class="line">        WSSender.getInstance().clearAllMessage();</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onMessage(String message) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onMessage: &quot;);</span><br><span class="line">        mWSReceiver.handlerMessage(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onClose(int code, String reason, boolean remote) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onClose: &quot;);</span><br><span class="line">        MainActivity.appendAndScrollLog(String.format(&quot;websocket 已断开,断开原因：%s\n&quot;,reason));</span><br><span class="line">        Observable.just(&quot;&quot;)</span><br><span class="line">                .subscribeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(new Consumer&lt;Object&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Object o) throws Exception &#123;</span><br><span class="line">                        if (mConnectCallback != null) &#123;</span><br><span class="line">                            mConnectCallback.onWebsocketClosed();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        onReconnect();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onError(Exception ex) &#123;</span><br><span class="line">        if (ex != null) &#123;</span><br><span class="line">            Log.d(TAG, &quot;onError: &quot;+ex.getMessage());</span><br><span class="line">            MainActivity.appendAndScrollLog(String.format(&quot;websocket 出现错误,错误原因：%s\n&quot;,ex.getMessage()));</span><br><span class="line">        &#125;</span><br><span class="line">        onReconnect();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void onReconnect() &#123;</span><br><span class="line">        if (mReconnectDisposable != null</span><br><span class="line">                &amp;&amp; !mReconnectDisposable.isDisposed())&#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        mReconnectDisposable = Observable.timer(1, TimeUnit.SECONDS)</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .subscribe(new Consumer&lt;Long&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Long aLong) throws Exception &#123;</span><br><span class="line">                        Log.d(TAG, &quot;websocket reconnect&quot;);</span><br><span class="line">                        WSClient.this.reconnect();</span><br><span class="line">                        mReconnectDisposable.dispose();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setConnectCallback(ConnectCallback mConnectCallback) &#123;</span><br><span class="line">        this.mConnectCallback = mConnectCallback;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public interface ConnectCallback&#123;</span><br><span class="line">        void onWebsocketConnected();</span><br><span class="line">        void onWebsocketClosed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>WSSender.java</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by runla on 2018/10/26.</span><br><span class="line"> * 文件描述：Websocket 的消息发送者</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class WSSender &#123;</span><br><span class="line">    private static final String TAG = &quot;WSSender&quot;;</span><br><span class="line">    public static final int MAX_MESSAGE_COUNT = 128;</span><br><span class="line">    private static WSSender instance;</span><br><span class="line">    private WSClient mWSClientManager;</span><br><span class="line">    // 消息队列</span><br><span class="line">    private LinkedList&lt;String&gt; mMessageList = new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private WSSender() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static WSSender getInstance() &#123;</span><br><span class="line">        if (instance == null) &#123;</span><br><span class="line">            synchronized (WSSender.class) &#123;</span><br><span class="line">                if (instance == null) &#123;</span><br><span class="line">                    instance = new WSSender();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setWSClient(WSClient wsClientManager) &#123;</span><br><span class="line">        this.mWSClientManager = wsClientManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 发送所有滞留的消息</span><br><span class="line">     */</span><br><span class="line">    public void clearAllMessage() &#123;</span><br><span class="line">        if (mWSClientManager == null) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        while (mMessageList.size() &gt; 0</span><br><span class="line">                &amp;&amp; mMessageList.getFirst() != null) &#123;</span><br><span class="line">            Log.d(TAG, &quot;sendMessage: &quot; + mMessageList.size());</span><br><span class="line">            mWSClientManager.send(mMessageList.getFirst());</span><br><span class="line">            mMessageList.removeFirst();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 发送消息，如果消息发送不出去，那么就等到连接成功后再次尝试发送</span><br><span class="line">     *</span><br><span class="line">     * @param msg</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public boolean sendMessage(String msg) &#123;</span><br><span class="line">        if (mWSClientManager == null) &#123;</span><br><span class="line">            throw new NullPointerException(&quot;websocket client is null&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (TextUtils.isEmpty(msg)) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        // 将需要发送的数据添加到队列的尾部</span><br><span class="line">        mMessageList.addLast(msg);</span><br><span class="line"></span><br><span class="line">        while (mMessageList.size() &gt; 0</span><br><span class="line">                &amp;&amp; mMessageList.getFirst() != null) &#123;</span><br><span class="line">            Log.d(TAG, &quot;sendMessage: &quot; + mMessageList.size());</span><br><span class="line">            if (!mWSClientManager.isOpen()) &#123;</span><br><span class="line">                // 尝试重连</span><br><span class="line">                mWSClientManager.onReconnect();</span><br><span class="line">                break;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                mWSClientManager.send(mMessageList.getFirst());</span><br><span class="line">                mMessageList.removeFirst();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 如果消息队列中超过我们设置的最大容量，那么移除最先添加进去的消息</span><br><span class="line">        if (mMessageList.size() &gt;= MAX_MESSAGE_COUNT) &#123;</span><br><span class="line">            mMessageList.removeFirst();</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>WSReceiver.java</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Created by runla on 2018/10/26.</span><br><span class="line"> * 文件描述：Websocket 的消息接收者</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">public class WSReceiver &#123;</span><br><span class="line">    private WSClient mWSClientManager;</span><br><span class="line">    private WSSender mWSSender;</span><br><span class="line">    private OnMessageCallback onMessageCallback;</span><br><span class="line">    public WSReceiver() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void setWSClient(WSClient mWSClientManager) &#123;</span><br><span class="line">        this.mWSClientManager = mWSClientManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setWSSender(WSSender mWSSender) &#123;</span><br><span class="line">        this.mWSSender = mWSSender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 处理接收消息</span><br><span class="line">     * @param message</span><br><span class="line">     */</span><br><span class="line">    public void handlerMessage(String message)&#123;</span><br><span class="line"></span><br><span class="line">        if (onMessageCallback != null)&#123;</span><br><span class="line">            onMessageCallback.onHandlerMessage(message);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setOnMessageCallback(OnMessageCallback onMessageCallback) &#123;</span><br><span class="line">        this.onMessageCallback = onMessageCallback;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public interface OnMessageCallback&#123;</span><br><span class="line">        void onHandlerMessage(String message);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>连接调用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">appendAndScrollLog(&quot;初始化WebSocket客户端...\n&quot;);</span><br><span class="line">WSClient.setUri( Config.instance.centralServerAddress, Config.instance.webSocketPort);</span><br><span class="line">WSClient.getInstance().onConnect();</span><br><span class="line">WSClient.getInstance().setConnectCallback(MainActivity.this);</span><br><span class="line">appendAndScrollLog(&quot;初始化WebSocket客户端完成\n&quot;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>数据发送</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 清除滞留的所有消息</span><br><span class="line">WSSender.getInstance().clearAllMessage();</span><br><span class="line"></span><br><span class="line">// 发送消息</span><br><span class="line">WSSender.getInstance().sendMessage(msg);</span><br></pre></td></tr></table></figure>
+<h2 id="数据库存储"><a href="#数据库存储" class="headerlink" title="数据库存储"></a>数据库存储</h2><p>在中控端，我们需要显示排行版，用来显示夹中娃娃机的用户在本月及本周夹中娃娃的排行，因此我们需要再中控端保存用户的夹中娃娃数量以及个人的其他信息，GreenDAO 是一款开源的面向 Android 的轻便、快捷的 ORM 框架，将 Java 对象映射到 SQLite 数据库中，我们操作数据库的时候，不在需要编写复杂的 SQL语句， 在性能方面，GreenDAO 针对 Android 进行了高度优化， 最小的内存开销 、依赖体积小，同时还是支持数据库加密。关于 GreenDAO 的用法我就不在这里做，具体的用法可以参考官网 <a href="http://greenrobot.org/greendao/" target="_blank" rel="noopener">GreenDAO</a>。</p>
+<hr>
+<h1 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h1><p>关于整个系统的架构搭建过程中遇到了好多坑，以上是我为这个项目提供的部分解决方案，当前全部的是不可能都放写出来的，此项目目前已经在西安和成都等地都有门店点了，据反馈，利润极大，不过这种类型的项目红利期不会太长，估计也是 2~3 年左右吧。如果有需要我们为 <strong>口红机开发</strong> 或者是 <strong>娃娃机开发</strong> 提供解决方案的，可以<a href="https://www.talkmoney.cn/" target="_blank" rel="noopener">联系我们</a>，目前我们在这个方面已经有相对较为成熟的解决方案了。</p>
+
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : GODBMW <br>
+        
+        原文链接 : <a href>http://yoursite.com/2019/02/25/Android-抖音爆红的口红挑战爬坑总结/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">知识 & 情怀 | 二者兼得</p>
+  
+  <button id="reward-btn">
+    
+    <span>投食</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/wechat.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/alipay.png" alt="支付宝扫一扫, 向我投食">
+        <p class="qrcode-meta">支付宝扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Android-口红机-总结/">
+              #Android,口红机,总结
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+  <nav class="post-navigation">
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2019/02/25/RxPermissions 源码解析之举一反三/" target="_self">RxPermissions 源码解析之举一反三</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  
+    <a href="#comment" class="comment-anchor"></a>
+<div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+<div id="vcomments"></div>
+
+<script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz",
+      appKey: "WaR7nrzhliHj9aVwdQzkdlGd",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz", "WaR7nrzhliHj9aVwdQzkdlGd");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+    
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 1, 10).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+  </body>
+
+</html>

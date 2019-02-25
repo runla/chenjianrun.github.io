@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="董沅鑫, yuanxin.me@gmail.com">
+  
+  
+  
+  <title>RxPermissions 源码解析之举一反三 | �¼�����˲���</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="Android,RxPermissions,源码解析,">
+  
+
+  <script>
+    console.log('\n%c Hexo-theme-bmw v4.0 ' + '%c 🎉 https://github.com/dongyuanxin/theme-bmw 🎉\n' + '\n%c View demo online ' + '%c 🔍 https://godbmw.com/ 🔍  \n' , 'color: #fadfa3; background: #030307; padding:3px 0;', '', 'color: #fadfa3; background: #030307; padding:3px 0;', '');
+  </script>
+
+  
+
+  
+
+  
+    <link rel="icon" href="/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/icon/iconfont.css">
+<link rel="stylesheet" href="/css/github-markdown.css">
+<link rel="stylesheet" href="/css/highlight.css">
+
+  <script src="/js/util.js"></script>
+<script src="/js/valine.min.js"></script>
+
+  
+
+  
+    <link href="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js" async></script>
+  
+
+  
+    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+  
+  
+  <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js" async></script>
+  
+  
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.11.0/dist/av-min.js"></script>
+  
+
+</head>
+
+  <body>
+
+    
+
+    <div id="app">
+
+      <div class="header-wrap">
+  <header>
+    <div class="site-brand">
+      <div class="site-title">
+        <a href="/">GODBMW.com</a>
+      </div>
+    </div>
+    <nav class="site-navigation">
+      <ul class="nav-menu">
+      
+        <li class="nav-item" data-path="/">
+          
+            <a href="/" target="_self">
+              主页
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/archives/">
+          
+            <a href="/archives/" target="_self">
+              归档
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/categories/">
+          
+            <a href="/categories/" target="_self">
+              分类
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/tags/">
+          
+            <a href="/tags/" target="_self">
+              标签
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/friends/">
+          
+            <a href="/friends/" target="_self">
+              友链
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path="/about/">
+          
+            <a href="/about/" target="_self">
+              关于
+            </a>
+          
+        </li>
+      
+        <li class="nav-item" data-path>
+          
+            <a href="javascript:void(0);" v-else>抓到我</a>
+            <ul class="nav-menu--dropdown">
+              
+                <li>
+                  <a href="https://github.com/dongyuanxin" target="_blank">
+                    Github
+                  </a>
+                </li>
+              
+                <li>
+                  <a href="https://www.zhihu.com/people/godbmw/activities" target="_blank">
+                    知乎
+                  </a>
+                </li>
+              
+            </ul>
+          
+        </li>
+      
+      </ul>
+    </nav>
+    <i class="iconfont icon-menu"></i>
+  </header>
+</div>
+
+<script>
+  let links = document.querySelectorAll('.nav-item');
+  for(let link of links){
+    let childrenLink = link.querySelector('ul');
+    link.addEventListener('mouseenter', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown active";
+      }
+    })
+    link.addEventListener('mouseleave', () => {
+      if(childrenLink) {
+        childrenLink.className = "nav-menu--dropdown";
+      }
+    })
+  }
+  let rootRealPath = getRealPath(window.location.pathname, true);
+  for(let link of links) {
+    let linkPath = link.getAttribute("data-path");
+    if(linkPath && getRealPath(linkPath, true) === rootRealPath) {
+      link.className = "nav-item hover";
+    }
+  }
+
+  let iconMenu = document.querySelector("i.iconfont.icon-menu"),
+    iconMenuClicked = false;
+  let navDOM = document.querySelector("nav.site-navigation");
+  iconMenu.addEventListener("click", () => {
+    iconMenuClicked 
+      ? navDOM.className = "site-navigation active"
+      : navDOM.className = "site-navigation";
+    iconMenuClicked = !iconMenuClicked;
+  })
+</script>
+
+      
+
+
+
+
+
+
+
+
+<div class="container post-index">
+
+  
+
+<div class="post">
+  <h1 class="article-title">
+    <span>RxPermissions 源码解析之举一反三</span>
+  </h1>
+  <div class="article-top-meta">
+    <span>
+      发布 : 
+      2019-02-25
+    </span>
+    
+    
+      <span>
+        浏览 : <span class="article-timer" data-identity="RxPermissions 源码解析之举一反三"></span>
+      </span>
+    
+  </div>
+
+  
+
+  <div class="article-content">
+    <div class="markdown-body">
+      <blockquote>
+<p>[toc]</p>
+</blockquote>
+<h1 id="RxPermissions-源码解析"><a href="#RxPermissions-源码解析" class="headerlink" title="RxPermissions 源码解析"></a>RxPermissions 源码解析</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>RxPermissions 是基于 RxJava 开发的用于帮助 在Android 6.0 中处理运行时权限检测的框架。在 Android 6.0 中增加了对危险权限的动态申请，而不是像 Android 6.0 之前的默认全部获取的方式。</p>
+<h2 id="原始动态权限的获取"><a href="#原始动态权限的获取" class="headerlink" title="原始动态权限的获取"></a>原始动态权限的获取</h2><p>如果按照以往的获取权限方式的话，那么我们获取权限一般需要有 3 个步骤，第一步是先判断当前是否已经获取到该权限了；第 2 步申请对应的权限；第 3 步在 Activity 或者 Fragment 中处理获取权限的结果。具体的实现步骤如下：</p>
+<ul>
+<li>step 1：判断权限是否已经获取。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (ActivityCompat.shouldShowRequestPermissionRationale(this,</span><br><span class="line">                Manifest.permission.CAMERA)) &#123;</span><br><span class="line">            //用于开发者提示用户权限的用途</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            //申请权限</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>step 2:申请权限</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ActivityCompat.requestPermissions(MainActivity.this,</span><br><span class="line">                                    new String[]&#123;Manifest.permission.CAMERA&#125;,</span><br><span class="line">                                    REQUEST_CAMERA);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>step 3:结果处理</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,</span><br><span class="line">        @NonNull int[] grantResults) &#123;</span><br><span class="line">    // 判断请求码，确定当前申请的权限</span><br><span class="line">    if (requestCode == REQUEST_CAMERA) &#123;</span><br><span class="line">        //判断权限是否申请通过</span><br><span class="line">        if (grantResults.length == 1 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) &#123;</span><br><span class="line">            //授权成功</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">               //授权失败</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        super.onRequestPermissionsResult(requestCode, permissions, grantResults);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="RxPermissions-的简单使用"><a href="#RxPermissions-的简单使用" class="headerlink" title="RxPermissions 的简单使用"></a>RxPermissions 的简单使用</h2><p>其实 RxPermissions 的使用方式有两种</p>
+<ul>
+<li><p>方式 1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RxPermissions rxPermissions = new RxPermissions(MainActivity.this);</span><br><span class="line">        rxPermissions</span><br><span class="line">                .request(Manifest.permission.READ_EXTERNAL_STORAGE,</span><br><span class="line">                        Manifest.permission.WRITE_EXTERNAL_STORAGE)//这里填写所需要的权限</span><br><span class="line">                .subscribe(new Consumer&lt;Boolean&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void accept(Boolean aBoolean) throws Exception &#123;</span><br><span class="line">                        if (aBoolean) &#123;</span><br><span class="line">                            // 通过</span><br><span class="line">                        &#125;else&#123;</span><br><span class="line">                            // 拒绝</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方式 2：结合 RxBinding 来使用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">RxPermissions rxPermissions = new RxPermissions(MainActivity.this);</span><br><span class="line">// Must be done during an initialization phase like onCreate</span><br><span class="line">RxView.clicks(findViewById(R.id.enableCamera))</span><br><span class="line">    .compose(rxPermissions.ensure(Manifest.permission.CAMERA))</span><br><span class="line">    .subscribe(granted -&gt; &#123;</span><br><span class="line">        // R.id.enableCamera has been clicked</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h3 id="整体介绍"><a href="#整体介绍" class="headerlink" title="整体介绍"></a>整体介绍</h3><p>接着我们来对这个 RxPermissions 进行一个源码的解析，但是打开源码的时候，我们可以发现，这个库里面，其实就只有 3 个类：RxPermissions、RxPermissionsFragment、Permission</p>
+<ul>
+<li>RxPermissions<ul>
+<li>最主要的实现类，利用 rxjava，为我们提供了方便权限申请的类</li>
+</ul>
+</li>
+<li>RxPermissionsFragment<ul>
+<li>是一个 fragment，主要的动态权限获取类 </li>
+</ul>
+</li>
+<li>Permission<ul>
+<li>定义的权限的 model 类 </li>
+</ul>
+</li>
+</ul>
+<h3 id="源码分析-1"><a href="#源码分析-1" class="headerlink" title="源码分析"></a>源码分析</h3><h4 id="RxPermissions-实例创建"><a href="#RxPermissions-实例创建" class="headerlink" title="RxPermissions 实例创建"></a>RxPermissions 实例创建</h4><p>对于源码的分析，我们应该先从简单的使用入手。下面我们可以先看看实例化 RxPermissionsFragment 的时候是做了什么？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RxPermissionsFragment mRxPermissionsFragment;</span><br><span class="line"></span><br><span class="line">public RxPermissions(@NonNull Activity activity) &#123;</span><br><span class="line">    mRxPermissionsFragment = getRxPermissionsFragment(activity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到，上面的代码中，实例化 RxPermissionsFragment 的时候，里面先创建了一个 RxPermissionsFragment 的实例。我们再接着看 getRxPermissionsFragment 这个方法的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private RxPermissionsFragment getRxPermissionsFragment(Activity activity) &#123;</span><br><span class="line">    //  查找 RxPermissionsFragment 是否已经被添加了</span><br><span class="line">    RxPermissionsFragment rxPermissionsFragment = findRxPermissionsFragment(activity);</span><br><span class="line">    boolean isNewInstance = rxPermissionsFragment == null;</span><br><span class="line">    if (isNewInstance) &#123;</span><br><span class="line">        rxPermissionsFragment = new RxPermissionsFragment();</span><br><span class="line">        FragmentManager fragmentManager = activity.getFragmentManager();</span><br><span class="line">        fragmentManager</span><br><span class="line">                .beginTransaction()</span><br><span class="line">                .add(rxPermissionsFragment, TAG)</span><br><span class="line">                .commitAllowingStateLoss();</span><br><span class="line">        fragmentManager.executePendingTransactions();</span><br><span class="line">    &#125;</span><br><span class="line">    return rxPermissionsFragment;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 getRxPermissionsFragment() 这个方法中，首先是先查找当前是否已经添加了这个 rxPermissionsFragment 的实例，如果已经添加，那么直接返回已经添加的实例，如果没有添加过的话，那么就重新再创建一个 RxPermissionsFragment 实例并提交；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">private RxPermissionsFragment findRxPermissionsFragment(Activity activity) &#123;</span><br><span class="line">    return (RxPermissionsFragment) activity.getFragmentManager().findFragmentByTag(TAG);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到此，rxPermissionsFragment 的实例化已经完成，接着我们需要看看 request 这个方法中实现了什么。</p>
+<h4 id="request-方法"><a href="#request-方法" class="headerlink" title="request 方法"></a>request 方法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public Observable&lt;Boolean&gt; request(final String... permissions) &#123;</span><br><span class="line">    return Observable.just(TRIGGER).compose(ensure(permissions));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static final Object TRIGGER = new Object();</span><br></pre></td></tr></table></figure>
+<p>从上面的代码中，我们可以看到，request 方法中需要传入的参数是一个 权限的数组，返回值是 Observable<boolean> 对象。Observable.just(TRIGGER) 是快捷创建一个 Observable 的方式，由于 TRIGGER 是一个空的 Object 对象，所以 TRIGGER 就是一个占位符而已，Observable.just(TRIGGER) 创建的是一个 Observable<object>,之后通过 compose 将 Observable<object> 转化为 Observable<boolean> 并返回。在 compose 中需要的参数是一个 ObservableTransformer，那么我们接着看 ensure() 这个方法。</boolean></object></object></boolean></p>
+<h4 id="ensure-permissions"><a href="#ensure-permissions" class="headerlink" title="ensure(permissions);"></a>ensure(permissions);</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; ObservableTransformer&lt;T, Boolean&gt; ensure(final String... permissions) &#123;</span><br><span class="line">        // 创建一个Transformer对象返回</span><br><span class="line">        return new ObservableTransformer&lt;T, Boolean&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public ObservableSource&lt;Boolean&gt; apply(Observable&lt;T&gt; o) &#123;</span><br><span class="line">                //request(o, permissions) 方法返回 Observable&lt;Permission&gt; 对象</span><br><span class="line">                return request(o, permissions)</span><br><span class="line">                        // 将 Observable&lt;Permission&gt; 转换为 Observable&lt;Boolean&gt;，在这里会等待所有的权限都返回了一次性发射数据。</span><br><span class="line">                        .buffer(permissions.length)</span><br><span class="line">                        .flatMap(new Function&lt;List&lt;Permission&gt;, ObservableSource&lt;Boolean&gt;&gt;() &#123;</span><br><span class="line">                            @Override</span><br><span class="line">                            public ObservableSource&lt;Boolean&gt; apply(List&lt;Permission&gt; permissions) throws Exception &#123;</span><br><span class="line">                                // 如果permissions为空那么直接返回Observable.empty();</span><br><span class="line">                                if (permissions.isEmpty()) &#123;</span><br><span class="line">                                    // Occurs during orientation change, when the subject receives onComplete.</span><br><span class="line">                                    // In that case we don&apos;t want to propagate that empty list to the</span><br><span class="line">                                    // subscriber, only the onComplete.</span><br><span class="line">                                    return Observable.empty();</span><br><span class="line">                                &#125;</span><br><span class="line">                                // Return true if all permissions are granted.</span><br><span class="line">                                for (Permission p : permissions) &#123;</span><br><span class="line">                                    if (!p.granted) &#123;</span><br><span class="line">                                        return Observable.just(false);</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                                return Observable.just(true);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>在 ensure 的这个方法中，最终会返回的是 ObservableTransformer&lt;T, Boolean&gt; 对象。接着我们看看 ObservableTransformer 的匿名实现类里面的 apply 方法，这里实现的就是将 Observable<permission> 转换为 Observable<boolean> 的操作。我们对 apply 这个方法里面的代码进行简化一下。</boolean></permission></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">return request(o,permissions)</span><br><span class="line">    .buffer(permissions.length)</span><br><span class="line">    .flatMap(new Function&lt;List&lt;Permission&gt;, ObservableSource&lt;Boolean&gt;&gt;&#123;&#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>request() 方法返回 Observable<permission> 对象</permission></li>
+<li>buffer(len) 操作符将一个 Observable<permission> 变换为 Observable&lt;List<permission>&gt;，原来的 Observable 正常发射数据，变换产生的 Observable 发射这些数据的缓存集合。buffer 将数据缓存到一个集合当中，然后在适当(比如：<strong>所有请求的权限结果都返回了</strong>）的时机一起发送。</permission></permission></li>
+<li>flatMap() 方法将 Observable&lt;List<permission>&gt; 转化为 Observable<boolean><h4 id="request-o-permissions"><a href="#request-o-permissions" class="headerlink" title="request(o, permissions);"></a>request(o, permissions);</h4></boolean></permission></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private Observable&lt;Permission&gt; request(final Observable&lt;?&gt; trigger, final String... permissions) &#123;</span><br><span class="line">    if (permissions == null || permissions.length == 0) &#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;RxPermissions.request/requestEach requires at least one input permission&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return oneOf(trigger, pending(permissions))</span><br><span class="line">            .flatMap(new Function&lt;Object, Observable&lt;Permission&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public Observable&lt;Permission&gt; apply(Object o) throws Exception &#123;</span><br><span class="line">                    return requestImplementation(permissions);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 request 这个方法里面，其实 oneOf() 和 pending() 方法我们可以忽略的，主要的话，我们应该关注 requestImplementation(final String… permissions) 这个方法，在这个方法里面，主要实现了权限的请求。</p>
+<h4 id="requestImplementation"><a href="#requestImplementation" class="headerlink" title="requestImplementation"></a>requestImplementation</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@TargetApi(Build.VERSION_CODES.M)</span><br><span class="line">private Observable&lt;Permission&gt; requestImplementation(final String... permissions) &#123;</span><br><span class="line">    List&lt;Observable&lt;Permission&gt;&gt; list = new ArrayList&lt;&gt;(permissions.length);</span><br><span class="line">    List&lt;String&gt; unrequestedPermissions = new ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    // In case of multiple permissions, we create an Observable for each of them.</span><br><span class="line">    // At the end, the observables are combined to have a unique response.</span><br><span class="line">    for (String permission : permissions) &#123;</span><br><span class="line">        mRxPermissionsFragment.log(&quot;Requesting permission &quot; + permission);</span><br><span class="line">        if (isGranted(permission)) &#123;</span><br><span class="line">            // Already granted, or not Android M</span><br><span class="line">            // Return a granted Permission object.</span><br><span class="line">            // 权限已经被同意或者不是 Android 6.0 以上版本，创建一个 同意的 Permission 对象。</span><br><span class="line">            list.add(Observable.just(new Permission(permission, true, false)));</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (isRevoked(permission)) &#123;</span><br><span class="line">            // 权限被拒绝，返回一个 拒绝的 Permission 对象。</span><br><span class="line">            list.add(Observable.just(new Permission(permission, false, false)));</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        PublishSubject&lt;Permission&gt; subject = mRxPermissionsFragment.getSubjectByPermission(permission);</span><br><span class="line">        // 如果 subject 不存在，那么创建一个 subject。</span><br><span class="line">        if (subject == null) &#123;</span><br><span class="line">            unrequestedPermissions.add(permission);</span><br><span class="line">            subject = PublishSubject.create();</span><br><span class="line">            mRxPermissionsFragment.setSubjectForPermission(permission, subject);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        list.add(subject);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 还未提起申请的权限进行申请</span><br><span class="line">    if (!unrequestedPermissions.isEmpty()) &#123;</span><br><span class="line">        String[] unrequestedPermissionsArray = unrequestedPermissions.toArray(new String[unrequestedPermissions.size()]);</span><br><span class="line">        requestPermissionsFromFragment(unrequestedPermissionsArray);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 严格按照顺序发射数据</span><br><span class="line">    return Observable.concat(Observable.fromIterable(list));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="onRequestPermissionsResult"><a href="#onRequestPermissionsResult" class="headerlink" title="onRequestPermissionsResult()"></a>onRequestPermissionsResult()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@TargetApi(Build.VERSION_CODES.M)</span><br><span class="line">public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) &#123;</span><br><span class="line">    super.onRequestPermissionsResult(requestCode, permissions, grantResults);</span><br><span class="line"></span><br><span class="line">    if (requestCode != PERMISSIONS_REQUEST_CODE) return;</span><br><span class="line"></span><br><span class="line">    boolean[] shouldShowRequestPermissionRationale = new boolean[permissions.length];</span><br><span class="line"></span><br><span class="line">    for (int i = 0; i &lt; permissions.length; i++) &#123;</span><br><span class="line">        shouldShowRequestPermissionRationale[i] = shouldShowRequestPermissionRationale(permissions[i]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    onRequestPermissionsResult(permissions, grantResults, shouldShowRequestPermissionRationale);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void onRequestPermissionsResult(String permissions[], int[] grantResults, boolean[] shouldShowRequestPermissionRationale) &#123;</span><br><span class="line">    for (int i = 0, size = permissions.length; i &lt; size; i++) &#123;</span><br><span class="line">        log(&quot;onRequestPermissionsResult  &quot; + permissions[i]);</span><br><span class="line">        // Find the corresponding subject</span><br><span class="line">        PublishSubject&lt;Permission&gt; subject = mSubjects.get(permissions[i]);</span><br><span class="line">        if (subject == null) &#123;</span><br><span class="line">            // No subject found</span><br><span class="line">            Log.e(RxPermissions.TAG, &quot;RxPermissions.onRequestPermissionsResult invoked but didn&apos;t find the corresponding permission request.&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        // 发射权限申请结果</span><br><span class="line">        mSubjects.remove(permissions[i]);</span><br><span class="line">        boolean granted = grantResults[i] == PackageManager.PERMISSION_GRANTED;</span><br><span class="line">        subject.onNext(new Permission(permissions[i], granted, shouldShowRequestPermissionRationale[i]));</span><br><span class="line">        subject.onComplete();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="RxJava-操作符"><a href="#RxJava-操作符" class="headerlink" title="RxJava 操作符"></a>RxJava 操作符</h3><h4 id="Observable-just"><a href="#Observable-just" class="headerlink" title="Observable.just()"></a>Observable.just()</h4><p>just 操作符是将一个对象转化为 Observable 的操作符。这个对象可以是一个数字、字符串或者是数组对象等，是 RxJava 中快速创建一个 Observable 对象的操作符。如果有 subscriber 订阅的话，那么会依次调用 onNext() 和 OnComplete() 方法。所以这里只是创建了一个 Observable 对象，方便后续的调用。</p>
+<h4 id="compose-Transformer-操作符"><a href="#compose-Transformer-操作符" class="headerlink" title="compose(Transformer)操作符"></a>compose(Transformer)操作符</h4><p>compose 操作符是对 Observable 对象的整体转化。例如：通过 Transformer，我们可以将 Observable<object> 对象转换成 Observable<boolean> 对象了。</boolean></object></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static ObservableTransformer&lt;String,Boolean&gt; getTransformer()&#123;</span><br><span class="line">    return new ObservableTransformer&lt;String, Boolean&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public ObservableSource&lt;Boolean&gt; apply(Observable&lt;String&gt; upstream) &#123;</span><br><span class="line">            return upstream.flatMap(new Function&lt;String, ObservableSource&lt;Boolean&gt;&gt;() &#123;</span><br><span class="line">                @Override</span><br><span class="line">                public ObservableSource&lt;Boolean&gt; apply(String s) throws Exception &#123;</span><br><span class="line">                    return Observable.just(true);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 线程切换</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">public static &lt;T&gt; ObservableTransformer&lt;T,T&gt; getScheduler()&#123;</span><br><span class="line">    return new ObservableTransformer&lt;T, T&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public ObservableSource&lt;T&gt; apply(Observable&lt;T&gt; upstream) &#123;</span><br><span class="line">            return upstream.subscribeOn(Schedulers.io())</span><br><span class="line">                    .observeOn(AndroidSchedulers.mainThread());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="buffer-操作符"><a href="#buffer-操作符" class="headerlink" title="buffer 操作符"></a>buffer 操作符</h4><p>buffer 操作符将一个 Observable 变换为另一个，原来的 Observable 正常发射数据，变换产生的 Observable 发射这些数据的缓存集合。buffer将数据缓存到一个集合当中，然后在适当的时机一起发送。<br>buffer(count) 以列表(List)的形式发射非重叠的缓存，每一个缓存至多包含来自原始Observable的count项数据（最后发射的列表数据可能少于count项）</p>
+<ul>
+<li><p>例如：缓存 2 个数据之后，再发送数据（调用 buffer(count) 函数）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Observable.just(1,2,3,4,5,6)</span><br><span class="line">        .buffer(2)</span><br><span class="line">        .subscribe(integers -&gt; &#123;</span><br><span class="line">            Log.i(TAG, &quot;accept size: &quot;+integers.size());</span><br><span class="line">            for (Integer integer : integers) &#123;</span><br><span class="line">                Log.i(TAG, &quot;accept: &quot;+integer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输出结果</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2018-12-14 11:16:28.452 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept size: 2</span><br><span class="line">2018-12-14 11:16:28.452 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 1</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 2</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept size: 2</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 3</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 4</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept size: 2</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 5</span><br><span class="line">2018-12-14 11:16:28.453 28126-28126/com.luwei.lwbaselib I/LwBaseActivity: accept: 6</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>例如：缓存 3 个数据，再发送数据，每次移动 1 步</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Observable.just(1,2,3,4)</span><br><span class="line">        .buffer(3,1)</span><br><span class="line">        .subscribe(integers -&gt; &#123;</span><br><span class="line">            Log.i(TAG, &quot;accept size: &quot;+integers.size());</span><br><span class="line">            for (Integer integer : integers) &#123;</span><br><span class="line">                Log.i(TAG, &quot;accept: &quot;+integer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输出结果</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept size: 3</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 1</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 2</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 3</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept size: 3</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 2</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 3</span><br><span class="line">2018-12-14 11:24:31.455 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 4</span><br><span class="line">2018-12-14 11:24:31.456 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept size: 2</span><br><span class="line">2018-12-14 11:24:31.456 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 3</span><br><span class="line">2018-12-14 11:24:31.456 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 4</span><br><span class="line">2018-12-14 11:24:31.456 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept size: 1</span><br><span class="line">2018-12-14 11:24:31.456 29164-29164/com.luwei.lwbaselib I/LwBaseActivity: accept: 4</span><br></pre></td></tr></table></figure>
+<h4 id="concat-操作符"><a href="#concat-操作符" class="headerlink" title="concat 操作符"></a>concat 操作符</h4><p>是接收若干个Observables，发射数据是有序的，不会交叉。</p>
+<h4 id="Subject"><a href="#Subject" class="headerlink" title="Subject"></a>Subject</h4><ul>
+<li>作为 Observable 和 Observer 之间的桥梁</li>
+<li>可以当做 Observable</li>
+<li>可以当做 Observer</li>
+</ul>
+<h4 id="PublishSubject"><a href="#PublishSubject" class="headerlink" title="PublishSubject"></a>PublishSubject</h4><p>继承至 Subject，它的 Observer 只会接收到 PublishSubject 被订阅之后发送的数据。示例代码如下；我们只会接收到 publishSubject3 和 publishSubject4；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PublishSubject&lt;String&gt; publishSubject = PublishSubject.create();</span><br><span class="line">publishSubject.onNext(&quot;publishSubject1&quot;);</span><br><span class="line">publishSubject.onNext(&quot;publishSubject2&quot;);</span><br><span class="line">publishSubject.subscribe(new Consumer&lt;String&gt;() &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void accept(String s) throws Exception &#123;</span><br><span class="line">        Log.i(TAG, &quot;accept: &quot;+s);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line">publishSubject.onNext(&quot;publishSubject3&quot;);</span><br><span class="line">publishSubject.onNext(&quot;publishSubject4&quot;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>执行结果</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2018-12-14 11:33:18.168 29916-29916/com.luwei.lwbaselib I/LwBaseActivity: accept: publishSubject3</span><br><span class="line">2018-12-14 11:33:18.168 29916-29916/com.luwei.lwbaselib I/LwBaseActivity: accept: publishSubject4</span><br></pre></td></tr></table></figure>
+<h2 id="举一反三"><a href="#举一反三" class="headerlink" title="举一反三"></a>举一反三</h2><p>可以看到，在 RxPermissions 这个获取权限的开源框架中，往 Activity 中添加了一个空的 Fragment，这个 fragment 才是用来发起申请权限和处理权限的请求，最后再将结果返回，这样子就避免了我们发送请求之后，还需要在 onRequestPermissionsResult 中进行处理，并判断 requestCode 等繁琐操作。想到这里，我们平时使用 startActivityForResult 时，我们也可以同样采用这样的思路来简化我们的请求。</p>
+<p>同样的，我们采用添加空白的 fragment，来做 startActivityForResult 请求，主要的实现类有 SimpleForResult 和 SimpleOnResultFragment，ActivityResultInfo 是请求 model，接下我们先看代码。</p>
+<h3 id="SimpleForResult"><a href="#SimpleForResult" class="headerlink" title="SimpleForResult"></a>SimpleForResult</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @Author: chenjianrun</span><br><span class="line"> * @Time: 2018/12/7</span><br><span class="line"> * @Description:   避免调用 startActivity 时，需要 onActivityResult 处理的类</span><br><span class="line"> */</span><br><span class="line">public class SimpleForResult &#123;</span><br><span class="line">    private static final String TAG = &quot;SimpleForResult&quot;;</span><br><span class="line">    private SimpleOnResultFragment mSimpleOnResultFragment;</span><br><span class="line"></span><br><span class="line">    public SimpleForResult(AppCompatActivity activity) &#123;</span><br><span class="line">        mSimpleOnResultFragment = getOnResultFragment(activity.getSupportFragmentManager());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public SimpleForResult(Fragment fragment)&#123;</span><br><span class="line">        mSimpleOnResultFragment = getOnResultFragment(fragment.getChildFragmentManager());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private SimpleOnResultFragment getOnResultFragment(FragmentManager fragmentManager) &#123;</span><br><span class="line">        SimpleOnResultFragment simpleOnResultFragment = findSimpleOnResultFragment(fragmentManager);</span><br><span class="line">        if (simpleOnResultFragment == null) &#123;</span><br><span class="line">            simpleOnResultFragment = new SimpleOnResultFragment();</span><br><span class="line">            fragmentManager</span><br><span class="line">                    .beginTransaction()</span><br><span class="line">                    .add(simpleOnResultFragment, TAG)</span><br><span class="line">                    .commitAllowingStateLoss();</span><br><span class="line">            fragmentManager.executePendingTransactions();</span><br><span class="line">        &#125;</span><br><span class="line">        return simpleOnResultFragment;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private SimpleOnResultFragment findSimpleOnResultFragment(FragmentManager fragmentManager) &#123;</span><br><span class="line">        return (SimpleOnResultFragment) fragmentManager.findFragmentByTag(TAG);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Observable&lt;ActivityResultInfo&gt; startForResult(Intent intent) &#123;</span><br><span class="line">        return mSimpleOnResultFragment.startForResult(intent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Observable&lt;ActivityResultInfo&gt; startForResult(Class&lt;?&gt; clazz) &#123;</span><br><span class="line">        Intent intent = new Intent(mSimpleOnResultFragment.getActivity(), clazz);</span><br><span class="line">        return startForResult(intent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void startForResult(Intent intent, Callback callback) &#123;</span><br><span class="line">        mSimpleOnResultFragment.startForResult(intent, callback);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void startForResult(Class&lt;?&gt; clazz, Callback callback) &#123;</span><br><span class="line">        Intent intent = new Intent(mSimpleOnResultFragment.getActivity(), clazz);</span><br><span class="line">        startForResult(intent, callback);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public interface Callback &#123;</span><br><span class="line">        void onActivityResult(int requestCode, int resultCode, Intent data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="SimpleOnResultFragment"><a href="#SimpleOnResultFragment" class="headerlink" title="SimpleOnResultFragment"></a>SimpleOnResultFragment</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @Author: chenjianrun</span><br><span class="line"> * @Time: 2018/12/7</span><br><span class="line"> * @Description:    真正调用 startActivity 和处理 onActivityResult 的类。</span><br><span class="line"> */</span><br><span class="line">public class SimpleOnResultFragment extends Fragment &#123;</span><br><span class="line">    private Map&lt;Integer, PublishSubject&lt;ActivityResultInfo&gt;&gt; mSubjects = new HashMap&lt;&gt;();</span><br><span class="line">    private Map&lt;Integer, SimpleForResult.Callback&gt; mCallbacks = new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    public SimpleOnResultFragment() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setRetainInstance(true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Observable&lt;ActivityResultInfo&gt; startForResult(final Intent intent) &#123;</span><br><span class="line">        int requestCode = generateRequestCode();</span><br><span class="line">        PublishSubject&lt;ActivityResultInfo&gt; subject = PublishSubject.create();</span><br><span class="line">        mSubjects.put(requestCode, subject);</span><br><span class="line">        startActivityForResult(intent, requestCode);</span><br><span class="line">        return subject;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void startForResult(Intent intent, SimpleForResult.Callback callback) &#123;</span><br><span class="line">        int requestCode = generateRequestCode();</span><br><span class="line">        mCallbacks.put(requestCode, callback);</span><br><span class="line">        startActivityForResult(intent, requestCode);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onActivityResult(int requestCode, int resultCode, Intent data) &#123;</span><br><span class="line">        super.onActivityResult(requestCode, resultCode, data);</span><br><span class="line">        //rxjava方式的处理</span><br><span class="line">        PublishSubject&lt;ActivityResultInfo&gt; subject = mSubjects.remove(requestCode);</span><br><span class="line">        if (subject != null) &#123;</span><br><span class="line">            subject.onNext(new ActivityResultInfo(requestCode, resultCode, data));</span><br><span class="line">            subject.onComplete();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //callback方式的处理</span><br><span class="line">        SimpleForResult.Callback callback = mCallbacks.remove(requestCode);</span><br><span class="line">        if (callback != null) &#123;</span><br><span class="line">            callback.onActivityResult(requestCode, resultCode, data);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private int generateRequestCode()&#123;</span><br><span class="line">        Random random = new Random();</span><br><span class="line">        for (;;)&#123;</span><br><span class="line">            int code = random.nextInt(65536);</span><br><span class="line">            if (!mSubjects.containsKey(code) &amp;&amp; !mCallbacks.containsKey(code))&#123;</span><br><span class="line">                return code;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ActivityResultInfo"><a href="#ActivityResultInfo" class="headerlink" title="ActivityResultInfo"></a>ActivityResultInfo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">package com.luwei.util.forresult;</span><br><span class="line"></span><br><span class="line">import android.content.Intent;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @Author: chenjianrun</span><br><span class="line"> * @Time: 2018/12/7</span><br><span class="line"> * @Description:</span><br><span class="line"> */</span><br><span class="line">public class ActivityResultInfo &#123;</span><br><span class="line">    private int requestCode;</span><br><span class="line">    private int resultCode;</span><br><span class="line">    private Intent data;</span><br><span class="line"></span><br><span class="line">    public ActivityResultInfo(int requestCode, int resultCode, Intent data) &#123;</span><br><span class="line">        this.requestCode = requestCode;</span><br><span class="line">        this.resultCode = resultCode;</span><br><span class="line">        this.data = data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getRequestCode() &#123;</span><br><span class="line">        return requestCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setRequestCode(int requestCode) &#123;</span><br><span class="line">        this.requestCode = requestCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ActivityResultInfo(int resultCode, Intent data) &#123;</span><br><span class="line">        this.resultCode = resultCode;</span><br><span class="line">        this.data = data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getResultCode() &#123;</span><br><span class="line">        return resultCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setResultCode(int resultCode) &#123;</span><br><span class="line">        this.resultCode = resultCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Intent getData() &#123;</span><br><span class="line">        return data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setData(Intent data) &#123;</span><br><span class="line">        this.data = data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="简单使用示例"><a href="#简单使用示例" class="headerlink" title="简单使用示例"></a>简单使用示例</h3><ul>
+<li>简单的 Activity 调用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 简化调用 startActivityForResult 及避免在 onActivityResult 中处理繁琐的结果</span><br><span class="line">                SimpleForResult simpleForResult = new SimpleForResult(this);</span><br><span class="line">                simpleForResult.startForResult(ToastActivity.class)</span><br><span class="line">                        .subscribe((resultInfo) -&gt; &#123;</span><br><span class="line">                            if (resultInfo.getData() != null) &#123;</span><br><span class="line">                                ToastUtils.showLong(resultInfo.getData().getStringExtra(&quot;result&quot;));</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>调用摄像头</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 打开摄像头</span><br><span class="line"> */</span><br><span class="line">private void openCamera() &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        mTmpFile = FileUtils.createTmpFile(this);</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    simpleForResult.startForResult(getOpenCameraIntent(this, mTmpFile))</span><br><span class="line">            .subscribe((resultInfo -&gt; &#123;</span><br><span class="line">                if (resultInfo.getResultCode() == RESULT_OK) &#123;</span><br><span class="line">                    mHeadUrl = mTmpFile.getAbsolutePath();</span><br><span class="line">                    ImageLoaderUtils.loadCircleImage(this, ivHeader, mHeadUrl);</span><br><span class="line">                    // 裁剪(如果没有要求可裁剪，也可以不要）</span><br><span class="line">                    startPictureZoom(mTmpFile);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 获取打开照相机的 intent，适配 Android 7.0</span><br><span class="line"> * @param activity</span><br><span class="line"> * @param mTmpFile</span><br><span class="line"> * @return</span><br><span class="line"> */</span><br><span class="line">public static Intent getOpenCameraIntent(Activity activity,File mTmpFile)&#123;</span><br><span class="line">    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);</span><br><span class="line">    if (intent.resolveActivity(activity.getPackageManager()) != null) &#123;</span><br><span class="line">        if (mTmpFile != null &amp;&amp; mTmpFile.exists()) &#123;</span><br><span class="line">            if (Build.VERSION.SDK_INT &gt;= 24) &#123;</span><br><span class="line">                // 适配 Android 7.0</span><br><span class="line">                intent.putExtra(MediaStore.EXTRA_OUTPUT,</span><br><span class="line">                        FileProvider.getUriForFile(activity, activity.getPackageName()+&quot;.provider&quot;,mTmpFile));</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTmpFile));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            Toast.makeText(activity, me.nereo.image_selector.R.string.error_image_not_exist, Toast.LENGTH_SHORT).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        Toast.makeText(activity, me.nereo.image_selector.R.string.msg_no_camera, Toast.LENGTH_SHORT).show();</span><br><span class="line">    &#125;</span><br><span class="line">    return intent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+  </div>
+  
+    <div class="copy-right">
+      <div class="markdown-body">
+        <blockquote>
+        
+        
+          本文作者 : GODBMW <br>
+        
+        原文链接 : <a href>http://yoursite.com/2019/02/25/RxPermissions 源码解析之举一反三/</a><br>
+        版权声明 : 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+        </blockquote>
+      </div>
+    </div>
+  
+  
+  
+    <div class="social-share" style="margin-top: -2rem" data-wechat-qrcode-title="<p>微信扫一扫</p>" data-wechat-qrcode-helper="<p>微信右上角, 扫一扫分享</p>" data-sites="qzone, qq, weibo, wechat, douban, google, facebook, twitter">
+  <span style="color: #6b7487; font-size: 1.4rem;">分享到: </span>
+</div>
+<script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js" async></script>
+  
+
+  
+    <div id="reward">
+  
+    <p id="reward-meta">知识 & 情怀 | 二者兼得</p>
+  
+  <button id="reward-btn">
+    
+    <span>投食</span>
+  </button>
+  <div id="reward-qrcode">
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/wechat.png" alt="微信扫一扫, 向我投食">
+        <p class="qrcode-meta">微信扫一扫, 向我投食</p>
+      </div>
+    
+      <div class="reward-qrcode--container">
+        <img class="qrcode-img" src="/images/alipay.png" alt="支付宝扫一扫, 向我投食">
+        <p class="qrcode-meta">支付宝扫一扫, 向我投食</p>
+      </div>
+    
+  </div>
+
+</div>
+
+<script>
+  (() => {
+    let button = document.querySelector('#reward-btn'),
+      qrcode = document.querySelector('#reward-qrcode'),
+      display = false;
+    
+    button.addEventListener('click', () => {
+      qrcode.style.display = display ? 'none' : 'block'
+      display = !display
+    }, false)
+  })()
+</script>
+  
+
+  <div class="article-footer">
+    <div class="article-meta pull-left">
+      <span>
+        
+          <i class="iconfont icon-06tags"></i>标签: 
+          
+          <span class="span--tag">
+            <a href="/tags/Android-RxPermissions-源码解析/">
+              #Android,RxPermissions,源码解析
+            </a>
+          </span>
+          
+        
+      </span>
+    </div>
+    <div class="article-meta pull-right">
+    </div>
+  </div>
+</div>
+
+
+  <aside id="sidebar">
+    <p id="sidebar-header"></p>
+    <ol id="sidebar-toc"></ol>
+  </aside>
+  <script async>setTimeout(generateToc, 10);</script>
+
+
+  <nav class="post-navigation">
+    
+      <div class="nav-pre">
+        <i class="iconfont icon-prev"></i>
+        上一篇:
+        <a href="/2019/02/25/Android-抖音爆红的口红挑战爬坑总结/" target="_self">Android 抖音爆红的口红挑战爬坑总结</a>
+      </div>
+    
+    
+      <div class="nav-next">
+        下一篇:
+        <a href="/2019/02/25/about/" target="_self">about</a>
+        <i class="iconfont icon-next"></i>
+      </div>
+    
+  </nav>
+
+  
+    <a href="#comment" class="comment-anchor"></a>
+<div class="comment-title"><i class="iconfont icon-footprint"></i> 留下足迹 <i class="iconfont icon-footprint"></i></div>
+<div id="vcomments"></div>
+
+<script defer>
+  if( true ) {
+    let path = getRealPath()
+    new Valine({
+      el: "#vcomments",
+      appId: "Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz",
+      appKey: "WaR7nrzhliHj9aVwdQzkdlGd",
+      notify: false,
+      verify: false,
+      avatar: "robohash",
+      placeholder: "正确填写邮箱, 才能及时收到回复哦♪(^∇^*)",
+      path
+    });
+  }
+</script>
+   
+
+  
+    <script defer>
+const valineAPI = (() => {
+  try {
+    AV.init("Hyq9wkH495DgNHWhDQCOfQSp-gzGzoHsz", "WaR7nrzhliHj9aVwdQzkdlGd");
+  } catch(error) {}
+  const isExist = (identity) => {
+    identity = identity || getRealPath();
+    let query = new AV.Query('Timer');
+    return new Promise((resolve, reject) => {
+      query.equalTo("identity", identity);
+      query.find().then(results => {
+        resolve(results.length > 0);
+      }, error => reject(error));
+    })
+  }
+
+  const _get = (identity) => {
+    let query = null;
+    if(identity && identity instanceof Array){
+      let querys = [];
+      for(let i = 0; i < identity.length; ++i) {
+        querys[i] = new AV.Query('Timer');
+        querys[i].equalTo('identity', identity[i]);
+      }
+      query = AV.Query.or.apply(null ,querys);
+    } else {
+      identity = identity || getRealPath();
+      query = new AV.Query("Timer");
+      query.equalTo("identity", identity);
+    }
+
+    return new Promise((resolve, reject) => {
+      query.find()
+      .then(results => resolve(results))
+      .catch(error => reject(error))
+    })
+  }
+
+  const create = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let Todo = AV.Object.extend('Timer');
+      let todo = new Todo();
+      todo.set("times", 1);
+      todo.set("identity", identity);
+      todo.save().then(res => resolve(true), error => reject(error));
+    })
+  }
+
+  const update = (identity) => {
+    identity = identity || getRealPath();
+    return new Promise((resolve, reject) => {
+      let query = new AV.Query('Timer');
+      query.equalTo("identity", identity);
+      query.find().then(todos => {
+        todos.forEach(todo => {
+          todo.set("times", todo.attributes.times + 1);
+        });
+        return AV.Object.saveAll(todos);
+      }).then(todos => resolve(true), error => reject(error));
+    })
+  }
+
+  return {
+    isExist,
+    _get,
+    update,
+    create
+  }
+})()
+
+const calcAndWriteTimes = () => {
+  let isPost = true;
+
+  let timerAllDOM = document.querySelectorAll(".article-timer");
+
+  if(isPost) {
+    let identity = timerAllDOM[0].getAttribute("data-identity");
+    valineAPI.isExist(identity)
+    .then(exist => {
+      if(exist) {
+        return valineAPI.update(identity);
+      }
+      return new Promise(resolve => resolve(true));
+    })
+    .then( succuess => valineAPI._get(identity))
+    .then( result => timerAllDOM[0].innerText = result[0].attributes.times)
+    .catch(error => console.log(error.message))
+    return ;
+  }
+
+  let timerDOMCache = {};
+
+  for(let timerDOM of timerAllDOM) {
+    let identity = timerDOM.getAttribute("data-identity");
+    if(timerDOMCache.hasOwnProperty(identity)){
+      timerDOMCache[identity].dom.push(timerDOM);
+    }else{
+      timerDOMCache[identity] = {
+        dom: [timerDOM],
+        times: undefined
+      };
+    }
+  }
+
+  let identities = Object.keys(timerDOMCache);
+  valineAPI._get(identities).then(results => {
+    for(let result of results) {
+      let {identity, times} = result.attributes;
+      timerDOMCache[identity].times = times;
+      timerDOMCache[identity].dom.map(item => item.innerText = times);
+    }
+    for(let identity of identities) {
+      if(timerDOMCache[identity].times){
+        continue;
+      }
+      timerDOMCache[identity].dom.map(item => item.innerText = 1);
+      valineAPI.create(identity);
+    }
+  }).catch(error => console.log(error.message))
+}
+
+if(true){
+  calcAndWriteTimes();
+}
+</script>
+   
+
+</div>
+
+
+      <footer>
+  <p class="site-info">
+    博客已萌萌哒运行<span id="time-to-now"></span><span class="my-face">(●'◡'●)ﾉ♥</span>
+    <br>
+    Theme - <a href="https://github.com/dongyuanxin/theme-bmw">BMW</a> | Made With 💗 | Powered by <a href="https://godbmw.com/">GodBMW</a>
+    <br>
+    
+  </p>
+</footer>
+
+
+
+<script>
+const timeToNowDOM = document.querySelector("#time-to-now");
+const startTimestamp = new Date(2018, 1, 10).getTime();
+
+const updateTimeStr = () => {
+  let offset = parseInt(
+      (new Date().getTime() - startTimestamp) / 1000,
+      10
+    ),
+    day = Math.floor(offset / 86400),
+    hour = Math.floor((offset % 86400) / 3600),
+    minute = Math.floor(((offset % 86400) % 3600) / 60),
+    second = Math.floor(((offset % 86400) % 3600) % 60);
+  timeToNowDOM.innerHTML =
+    day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+  setTimeout(updateTimeStr, 500);
+}
+
+setTimeout(updateTimeStr, 500);
+</script>
+
+
+      <div class="back-to-top hidden">
+  <span>
+    <i class="iconfont icon-60"></i><span></span>%
+  </span>
+</div>
+
+<script>
+const updateIconToTop = percent => {
+  let dom = document.querySelector(".back-to-top span span");
+  dom.innerText = percent;
+  if(percent < 1) {
+    document.querySelector(".back-to-top").className = "back-to-top hidden";
+  } else {
+    document.querySelector(".back-to-top").className = "back-to-top";
+  }
+}
+
+const handleScoll = () => {
+  let isRunning = false;
+  return () => {
+    if (isRunning) return;
+    isRunning = true;
+    window.requestAnimationFrame(timestamp => {
+      let scrollTop =
+          document.documentElement.scrollTop || document.body.scrollTop,
+        scrollHeight =
+          document.documentElement.scrollHeight ||
+          document.body.scrollHeight,
+        clientHeight =
+          document.documentElement.clientHeight ||
+          document.body.clientHeight;
+      isRunning = false;
+      if (scrollTop <= 1) {
+        updateIconToTop(0);
+        return;
+      }
+      if (scrollTop + clientHeight >= scrollHeight) {
+        updateIconToTop(100);
+      } else {
+        updateIconToTop(parseInt(
+          100 * scrollTop / (scrollHeight - clientHeight),
+          10
+        ));
+      }
+    });
+  };
+}
+
+const backToTop = () => {
+  let scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop,
+    delay = 10,
+    time = 200;
+  if (scrollTop <= 20) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    return;
+  }
+  let step = Math.ceil(scrollTop * delay / time);
+  let timer = setInterval(() => {
+    scrollTop =
+      document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop - step <= 0) {
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      clearInterval(timer);
+    } else {
+      document.documentElement.scrollTop = scrollTop - step;
+      document.body.scrollTop = scrollTop - step;
+    }
+  }, delay);
+}
+
+document.addEventListener("scroll", handleScoll(), false);
+
+document.querySelector(".back-to-top").addEventListener("click", backToTop, false);
+
+</script>
+
+    </div>
+
+    
+      <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script>
+  (() => {
+    const mathjaxConfig = {
+      showProcessingMessages: false, //关闭js加载过程信息
+      messageStyle: "none", //不显示信息
+      jax: ["input/TeX", "output/HTML-CSS"],
+      tex2jax: {
+        inlineMath: [["$", "$"], ["\\(", "\\)"]], //行内公式选择符
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]], //段内公式选择符
+        skipTags: ["script", "noscript", "style", "textarea", "pre", "code", "a"] //避开某些标签
+      },
+      "HTML-CSS": {
+        availableFonts: ["STIX", "TeX"], //可选字体
+        showMathMenu: false //关闭右击菜单显示
+      }
+    }
+
+    let mathjaxInterval = setInterval(() => {
+      if(!window.MathJax){
+        return;
+      }
+      window.MathJax.Hub.Config(mathjaxConfig)
+      window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('app')])
+
+      clearInterval(mathjaxInterval)
+    }, 10)    
+  })()
+</script>
+    
+
+    <script src="https://cdn.bootcss.com/fancybox/3.5.2/jquery.fancybox.min.js" async></script>
+<script async>
+  let fancyTimer = setInterval(function(){
+    if(!window.$){
+      return;
+    }
+    $(document).ready(function() {
+      $(".post img").each(function () {
+        if($(this).parent().get(0).tagName.toLowerCase() === "a") {
+          return;
+        }
+        // $(this).attr("data-fancybox", "gallery"); // if you add 'data-fancybox', img will display after showed
+        var element = document.createElement("a");
+        $(element).attr("data-fancybox", "gallery");
+        $(element).attr("href", $(this).attr("src"));
+        $(this).wrap(element);
+      });
+      
+      clearInterval(fancyTimer);
+    });
+  }, 10);
+</script>
+
+    
+  </body>
+
+</html>
